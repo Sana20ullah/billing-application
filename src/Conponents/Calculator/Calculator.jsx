@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { evaluate } from "mathjs";
 
 export default function Calculator() {
   const [input, setInput] = useState("");
@@ -15,7 +16,7 @@ export default function Calculator() {
         setInput((prev) => prev + key);
       } else if (key === "Enter") {
         try {
-          const evalResult = eval(input); // eslint-disable-line
+          const evalResult = evaluate(input);
           setResult(evalResult);
         } catch {
           setResult("Error");
@@ -68,7 +69,7 @@ export default function Calculator() {
       setInput((prev) => prev.slice(0, -1));
     } else if (value === "=") {
       try {
-        const evalResult = eval(input); // eslint-disable-line
+        const evalResult = evaluate(input);
         setResult(evalResult);
       } catch {
         setResult("Error");
