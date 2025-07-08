@@ -1,0 +1,98 @@
+.calculator-box {
+  background: linear-gradient(to bottom right, #111827, #000);
+  padding: 0.8rem;
+  border-radius: 1rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6);
+  max-width: 220px;
+  margin: auto;
+}
+
+.calculator-body {
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 0.8rem;
+  border: 2px solid #facc15;
+  padding: 0.8rem;
+  backdrop-filter: blur(6px);
+  color: white;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.calculator-display {
+  background-color: rgba(0, 0, 0, 0.3);
+  border: 1px solid #facc15;
+  padding: 0.4rem;
+  border-radius: 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.input {
+  text-align: right;
+  font-size: 0.65rem;
+  color: #d1d5db;
+  height: 1rem;
+  opacity: 0.8;
+  overflow: hidden;
+}
+
+.result {
+  text-align: right;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #a3e635;
+  height: 1.8rem;
+  text-shadow: 0 0 4px #a3e635;
+  overflow: hidden;
+}
+
+.calculator-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.4rem;
+}
+
+/* === Buttons (Smaller, Stylish) === */
+.btn {
+  height: 2.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  border: none;
+  background-color: #c7c3c0;
+  color: black;
+  box-shadow:
+    4px 4px 8px rgba(0, 0, 0, 0.4),
+    inset -1.5px -1.5px 4px #c7c3c0,
+    inset 1.5px 1.5px 2px #ffffff;
+  transition: all 0.1s ease-in-out;
+  cursor: pointer;
+  padding: 0;
+}
+
+.btn:active {
+  box-shadow:
+    inset 1px 1px 2px #000,
+    inset -1.5px -1.5px 4px #c7c3c0;
+  transform: scale(0.95);
+}
+
+/* === Special Styles === */
+.operator {
+  background: linear-gradient(to right, #3b82f6, #6366f1);
+  color: white;
+}
+
+.equal {
+  grid-column: span 2;
+  background: linear-gradient(to right, #22c55e, #059669);
+  color: white;
+}
+
+.clear {
+  background: linear-gradient(to right, #ef4444, #f43f5e);
+  color: white;
+}
+
+.backspace {
+  background: linear-gradient(to right, #facc15, #f97316);
+  color: black;
+}

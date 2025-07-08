@@ -1,0 +1,343 @@
+import React, { useState, useEffect, useContext } from "react";
+import { FaTrash } from "react-icons/fa";
+import { Html5QrcodeScanner } from "html5-qrcode";
+import "./Manu.css";
+import { InvoiceContext } from "../invoice/InvoiceContext";
+
+const BillingPage = ({ invoiceOverride, shopDetails }) => {
+  const { invoiceData, setInvoiceData } = useContext(InvoiceContext);
+  const [allProducts, setAllProducts] = useState([]);
+  const [suggestions, setSuggestions] = useState({});
+  const items = invoiceData.items || [];
+  const [shop, setShop] = useState(
+    invoiceOverride?.shop || shopDetails || {
+      name: "Shop Name",
+      address: "123 Main Street",
+      phone: "+966 123 456 789",
+    }
+  );
+  const [vat, setVat] = useState(invoiceOverride?.vat || 0);
+  const [discount, setDiscount] = useState(invoiceOverride?.discount || 0);
+  const [changeMoney, setChangeMoney] = useState(invoiceOverride?.changeMoney || 0);
+  const [customerName, setCustomerName] = useState(invoiceOverride?.customerName || "");
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/products")
+      .then((res) => res.json())
+      .then((data) => setAllProducts(data))
+      .catch((err) => console.error("Failed to load products for suggestions", err));
+  }, []);
+
+  useEffect(() => {
+    if (invoiceOverride?.shop) {
+      setShop(invoiceOverride.shop);
+    } else if (shopDetails) {
+      setShop(shopDetails);
+    }
+  }, [invoiceOverride, shopDetails]);
+
+  useEffect(() => {
+    if (!invoiceOverride) {
+      setInvoiceData({ ...invoiceData, vat, discount, changeMoney, customerName, shop });
+    }
+  }, [vat, discount, changeMoney, customerName, shop]);
+
+  const total = items.reduce((acc, cur) => acc + cur.amount, 0);
+  const discounted = total - (total * (parseFloat(discount) || 0)) / 100;
+  const finalTotal = discounted + (discounted * (parseFloat(vat) || 0)) / 100;
+  const remaining = changeMoney - finalTotal;
+
+  const addItem = () => {
+    const newItem = { item: "", qty: 1, rate: 0, amount: 0 };
+    setInvoiceData((prev) => ({ ...prev, items: [...prev.items, newItem] }));
+  };
+
+  const removeItem = (index) => {
+    const updated = [...items];
+    updated.splice(index, 1);
+    setInvoiceData((prev) => ({ ...prev, items: updated }));
+  };
+
+  const updateItem = (index, key, value) => {
+    const updated = [...items];
+    updated[index][key] = value;
+
+    if (key === "item") {
+      if (value.trim() === "") {
+        setSuggestions((prev) => ({ ...prev, [index]: [] }));
+      } else {
+        const filtered = allProducts.filter((p) =>
+          p.name.toLowerCase().includes(value.toLowerCase())
+        );
+        setSuggestions((prev) => ({ ...prev, [index]: filtered }));
+      }
+    } else {
+      const qty = parseFloat(updated[index].qty) || 0;
+      const rate = parseFloat(updated[index].rate) || 0;
+      updated[index].amount = qty * rate;
+      setSuggestions((prev) => ({ ...prev, [index]: [] }));
+    }
+
+    setInvoiceData((prev) => ({ ...prev, items: updated }));
+  };
+
+  const handleSuggestionClick = (index, product) => {
+    const updated = [...items];
+    updated[index] = {
+      ...updated[index],
+      item: product.name,
+      qty: 1,
+      rate: product.rate,
+      barcode: product.barcode,
+      amount: product.rate * 1,
+    };
+    setInvoiceData((prev) => ({ ...prev, items: updated }));
+    setSuggestions((prev) => ({ ...prev, [index]: [] }));
+  };
+
+  const resetBillValues = () => {
+    setVat(0);
+    setDiscount(0);
+    setChangeMoney(0);
+    alert("Invoice bill values reset.");
+  };
+
+  // Barcode scanner integration
+  useEffect(() => {
+   
+
+    const scanner = new Html5QrcodeScanner("scanner", { fps: 10, qrbox: 250 });
+
+    scanner.render(
+      async (decodedText) => {
+        console.log("Scanned:", decodedText);
+       try {
+const res = await fetch(`https://34a2-46-143-183-105.ngrok-free.app/api/products/${decodedText}`);
+
+
+
+  if (!res.ok) {
+    const text = await res.text();  // get raw response text
+    console.error('Fetch failed with response:', text);
+    throw new Error(`Product not found`);
+  }
+
+  const product = await res.json();
+  // ... rest of code
+} catch (err) {
+  alert("Scan failed: " + err.message);
+}
+
+
+        // Remove scanner.clear() here if you want to keep scanning continuously
+        // scanner.clear();
+      },
+      (error) => {
+        console.warn(error);
+      }
+    );
+
+    return () => {
+      scanner.clear().catch(() => {});
+    };
+  }, []);
+
+  return (
+    <div className="flex-1 flex justify-center items-start overflow-hidden print:p-5">
+      <div className="print-area w-[700px] print:w-[300px] max-h-[95vh] print:max-h-full print:h-auto overflow-y-auto print:overflow-visible overflow-x-hidden print:overflow-x-hidden bg-white p-5 rounded shadow-md text-gray-800 print:break-words">
+        <h1 className="text-3xl mb-5 font-bold text-center mb-0">INVOICE</h1>
+
+        <div className="flex justify-between items-start mb-6">
+          <div>
+            <p className="font-semibold">{shop.name}</p>
+            <p>Address : {shop.address}</p>
+            <p>Phone : {shop.phone}</p>
+            <p>Invoice #: {invoiceOverride?.invoiceNumber || "INV-0001"}</p>
+            <p>Date: {new Date().toLocaleString()}</p>
+            <p className="flex items-center gap-2">
+              Bill To:
+              <input
+                type="text"
+                placeholder="Customer Name"
+                value={customerName}
+                onChange={(e) => setCustomerName(e.target.value)}
+                className=" border-gray-400 outline-none font-semibold w-48"
+              />
+            </p>
+          </div>
+        </div>
+
+        <hr className="border-dotted border-t-2 border-gray-400 mb-1 print:mb-1" />
+
+        <div className="grid-cols-header">
+          <div>SN</div>
+          <div>Item</div>
+          <div className="print:ml-7">Qty</div>
+          <div>Rate</div>
+          <div>Amount</div>
+          <div className="remove-header print-hidden">Trash</div>
+        </div>
+
+        <div className="max-h-64 overflow-y-auto custom-scroll pr-2 print:-mt-10">
+          {items.map((item, index) => (
+            <div
+              key={index}
+              className="grid grid-cols-6 gap-2 items-center mb-2 text-sm"
+            >
+              <div>{index + 1}</div>
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Item name"
+                  className="px-2 py-1 -ml-10 w-52 border-b border-gray-400 outline-none bg-transparent print:border-none print:-ml-3"
+                  value={item.item}
+                  onChange={(e) => updateItem(index, "item", e.target.value)}
+                />
+
+                {suggestions[index] && suggestions[index].length > 0 && (
+                  <ul className="absolute top-full left-0 z-50 bg-white border border-gray-300 w-52 max-h-40 overflow-auto shadow-md rounded mt-1">
+                    {suggestions[index].map((prod) => (
+                      <li
+                        key={prod._id}
+                        className="cursor-pointer px-2 py-1 hover:bg-blue-100"
+                        onClick={() => handleSuggestionClick(index, prod)}
+                      >
+                        {prod.name} - ₹{prod.rate}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+              <input
+                type="number"
+                className="px-2 py-1 ml-22 w-14 border-b border-gray-400 outline-none bg-transparent print:border-none print:ml-7"
+                value={item.qty}
+                onChange={(e) => updateItem(index, "qty", e.target.value)}
+              />
+              <input
+                type="number"
+                className="px-2 py-1 ml-16 w-22 border-b border-gray-400 outline-none bg-transparent print:border-none print:ml-4"
+                placeholder="0"
+                value={item.rate === 0 ? "" : item.rate}
+                onChange={(e) => updateItem(index, "rate", e.target.value)}
+              />
+              <div className="text-right pr-2 ml-10 w-25 print:-ml-5">
+                {item.amount.toFixed(2)}
+              </div>
+              {!invoiceOverride && (
+                <button
+                  className="text-red-600 hover:text-red-800 ml-18 print:hidden"
+                  onClick={() => removeItem(index)}
+                >
+                  <FaTrash />
+                </button>
+              )}
+            </div>
+          ))}
+
+          {!invoiceOverride && (
+            <button
+              onClick={addItem}
+              className="text-sm text-blue-600 hover:underline mt-2"
+            >
+              + Add Item
+            </button>
+          )}
+        </div>
+
+        <hr className="border-dotted border-t-2 border-gray-400 mb-4" />
+
+        <div className="flex justify-between">
+          <span>VAT/Tax (%)</span>
+          <input
+            type="number"
+            placeholder="0"
+            value={vat === 0 ? "" : vat}
+            onChange={(e) =>
+              setVat(e.target.value === "" ? 0 : parseFloat(e.target.value))
+            }
+            className="border-b border-gray-400 px-3 py-1 w-32 text-right outline-none bg-transparent print:border-none"
+            disabled={!!invoiceOverride}
+          />
+        </div>
+
+        <div className="flex justify-between">
+          <span>Discount (%)</span>
+          <input
+            type="number"
+            placeholder="0"
+            value={discount === 0 ? "" : discount}
+            onChange={(e) =>
+              setDiscount(e.target.value === "" ? 0 : parseFloat(e.target.value))
+            }
+            className="border-b border-gray-400 px-3 py-1 w-32 text-right outline-none print:border-0"
+            disabled={!!invoiceOverride}
+          />
+        </div>
+
+        <div className="flex justify-between font-bold text-lg border-t pt-2">
+          <span>Total Amount</span>
+          <input
+            type="text"
+            value={finalTotal.toFixed(2)}
+            readOnly
+            className="border-0 border-b border-solid border-black px-3 py-1 w-32 text-right rounded-none print-no-underline"
+          />
+        </div>
+
+        <div className="flex justify-between">
+          <span>Amount Paid</span>
+          <input
+            type="number"
+            placeholder="0"
+            value={changeMoney === 0 ? "" : changeMoney}
+            onChange={(e) => setChangeMoney(parseFloat(e.target.value) || 0)}
+            className="border-0 border-b border-solid border-black px-3 py-1 w-32 text-right rounded-none print:border-b-0"
+            disabled={!!invoiceOverride}
+          />
+        </div>
+
+        <div className="flex justify-between font-bold text-lg border-t pt-2">
+          <span>Change</span>
+          <input
+            type="text"
+            value={remaining.toFixed(2)}
+            readOnly
+            className="border px-3 py-1 w-32 text-right rounded-none print:border-0"
+          />
+        </div>
+
+        {!invoiceOverride && (
+          <div className="text-center mt-4 print:hidden">
+            {/* You can add Reset or Save buttons here if needed */}
+          </div>
+        )}
+
+        <p className="mt-2 text-sm text-gray-600 text-center">
+          Thank you for your purchase! We appreciate your business.
+          <br />
+          Come again soon! Have a great day!
+        </p>
+
+        <div className="w-24 h-24 ml-70 mt-8 print:ml-25">
+          <img
+            src={`https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
+              invoiceData.barcodeValue || "No Data"
+            )}&size=100x100`}
+            alt="QR Code"
+            className="w-full h-full object-contain"
+          />
+        </div>
+
+        {/* Scanner section */}
+        <div className="print:hidden">
+          <h2>Scan Product</h2>
+          <div id="scanner" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default BillingPage;

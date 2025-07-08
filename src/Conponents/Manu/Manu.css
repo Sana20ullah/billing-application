@@ -1,0 +1,68 @@
+
+.grid-cols-header {
+  display: grid;
+  grid-template-columns: 90px 1fr 90px 90px 90px 50px;
+  font-weight: 600; /* equivalent to font-semibold */
+  border-bottom: 1px dotted #9ca3af; /* Tailwind's gray-400 */
+  padding-bottom: 0.5rem; /* pb-2 */
+  margin-bottom: 0.5rem; /* mb-2 */
+  gap: 0.5rem; /* gap-2 */
+}
+
+.grid-cols-items {
+  display: grid;
+  grid-template-columns: 80px 200px 70px 120px 80px 30px; /* 6 columns */
+  gap: 10px;
+  align-items: center;
+}
+
+
+@media print {
+  .remove-header,
+  .print-hidden,
+  button.print-hidden {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  .grid-cols-header {
+    border-bottom: 0.2px solid !important;
+    padding-bottom: 1px !important;   /* Add padding below */
+    margin-bottom: 52px !important;   /* Add margin below */
+    padding-top: 5px !important;      /* Optional: padding top */
+    margin-top: 5px !important;       /* Optional: margin top */
+  }
+
+  .grid-cols-header {
+  display: grid;
+  grid-template-columns: 30px 1fr 60px 40px 60px 50px;
+  font-weight: 600; /* equivalent to font-semibold */
+  border-bottom: 1px dotted #9ca3af; /* Tailwind's gray-400 */
+  padding-bottom: 0.5rem; /* pb-2 */
+  margin-bottom: 0.5rem; /* mb-2 */
+  gap: 0.5rem; /* gap-2 */
+}
+
+
+  .grid-cols-items {
+    border-bottom: 1px dotted #9ca3af;
+    padding-bottom: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+ 
+
+  .remove-btn,
+  .remove-header {
+    display: none;
+  }
+
+  .print-area {
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .print-area::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }
+
+}
+

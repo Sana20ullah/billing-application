@@ -1,0 +1,45 @@
+
+@import "tailwindcss";
+
+.custom-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: #c4c4c4;
+  border-radius: 10px;
+}
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+/* styles.css */
+@media print {
+ 
+  .print-only,
+  .print-only * {
+    visibility: visible !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    page-break-after: avoid !important;
+    page-break-before: avoid !important;
+  }
+  .print-container {
+    width: 200px !important; /* Adjust to fit barcode on one page */
+    margin: 0 auto !important;
+    padding: 10px !important;
+  }
+  
+}
+.print-only {
+  display: none;
+
+}
+
