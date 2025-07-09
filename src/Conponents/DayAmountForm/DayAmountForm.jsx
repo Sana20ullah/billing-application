@@ -6,7 +6,7 @@ export default function DayAmountForm() {
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/daysales")
+    fetch("https://billing-backend-mp2p.onrender.com/api/daysales")
       .then((res) => res.json())
       .then((data) => {
         setDaySales(data);
