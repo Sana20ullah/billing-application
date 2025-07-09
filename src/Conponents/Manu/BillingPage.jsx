@@ -162,12 +162,13 @@ const BillingPage = ({ invoiceOverride }) => {
 
         <div className="flex justify-between items-start mb-6">
           <div>
-            <p className="font-semibold">{shop.name}</p>
-            <p>Address : {shop.address}</p>
-            <p>Phone : {shop.phone}</p>
-            <p>Invoice #: {invoiceOverride?.invoiceNumber || "INV-0001"}</p>
-            <p>Date: {new Date().toLocaleString()}</p>
-            <p className="flex items-center gap-2">
+      <p className="font-semibold">{shop?.name || "Loading Shop..."}</p>
+<p>Address : {shop?.address || "-"}</p>
+<p>Phone : {shop?.phone || "-"}</p>
+<p>Invoice #: {invoiceOverride?.invoiceNumber || "INV-0001"}</p>
+<p>Date: {new Date().toLocaleString()}</p>
+<p className="flex items-center gap-2">
+
               Bill To:
               <input
                 type="text"
