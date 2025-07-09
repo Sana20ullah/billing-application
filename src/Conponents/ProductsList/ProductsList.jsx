@@ -4,36 +4,47 @@ import { FaTrash } from "react-icons/fa";
 const ProductsList = ({ onClose }) => {
   const [products, setProducts] = useState([]);
 
-  const fetchProducts = () => {
-    fetch("http://localhost:5000/api/products")
-      .then((res) => res.json())
-      .then(setProducts)
-      .catch((err) => {
-        alert("Failed to load products");
-        console.error(err);
-      });
-  };
+ const fetchProducts = () => {
+  const backendURL =
+    window.location.hostname === "localhost"
+      ? "http://localhost:5000"
+      : "https://billing-backend-mp2p.onrender.com"; // ✅ your Render backend
+
+  fetch(`${backendURL}/api/products`)
+    .then((res) => res.json())
+    .then(setProducts)
+    .catch((err) => {
+      alert("Failed to load products");
+      console.error(err);
+    });
+};
+
 
   useEffect(() => {
     fetchProducts();
   }, []);
 
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
+const BACKEND_URL = import.meta.env.PROD
+  ? "https://billing-backend-mp2p.onrender.com"
+  : "http://localhost:5000";
 
-    try {
-      const res = await fetch(`http://localhost:5000/api/products/${id}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) throw new Error("Delete failed");
+const handleDelete = async (id) => {
+  if (!window.confirm("Are you sure you want to delete this product?")) return;
 
-      alert("Product deleted!");
-      fetchProducts(); // Refresh list
-    } catch (err) {
-      alert("Error deleting product");
-      console.error(err);
-    }
-  };
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/products/${id}`, {
+      method: "DELETE",
+    });
+
+    if (!res.ok) throw new Error("Delete failed");
+
+    alert("Product deleted!");
+    fetchProducts(); // Refresh the product list
+  } catch (err) {
+    alert("Error deleting product");
+    console.error(err);
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-auto">

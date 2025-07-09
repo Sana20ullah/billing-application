@@ -21,12 +21,18 @@ const BillingPage = ({ invoiceOverride, shopDetails }) => {
   const [changeMoney, setChangeMoney] = useState(invoiceOverride?.changeMoney || 0);
   const [customerName, setCustomerName] = useState(invoiceOverride?.customerName || "");
 
-  useEffect(() => {
-    fetch("http://localhost:5000/api/products")
-      .then((res) => res.json())
-      .then((data) => setAllProducts(data))
-      .catch((err) => console.error("Failed to load products for suggestions", err));
-  }, []);
+useEffect(() => {
+  const backendURL =
+    window.location.hostname === "localhost"
+      ? "http://localhost:5000"
+      : "https://billing-backend-mp2p.onrender.com";
+
+  fetch(`${backendURL}/api/products`)
+    .then((res) => res.json())
+    .then((data) => setAllProducts(data))
+    .catch((err) => console.error("Failed to load products for suggestions", err));
+}, []);
+
 
   useEffect(() => {
     if (invoiceOverride?.shop) {

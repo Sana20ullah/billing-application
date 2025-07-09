@@ -45,24 +45,29 @@ export default function ReturnSaleForm({ onClose }) {
     fetchReturns();
   }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post("http://localhost:5000/api/returns", formData);
-      alert("Return submitted successfully!");
-      setFormData({
-        customerName: "",
-        productName: "",
-        quantity: 1,
-        reason: "",
-      });
-      setShowForm(false);
-      fetchReturns();
-    } catch (error) {
-      console.error("Error submitting return:", error);
-      setError("Failed to submit return.");
-    }
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  const backendURL =
+    window.location.hostname === "localhost"
+      ? "http://localhost:5000"
+      : "https://billing-backend-mp2p.onrender.com"; // your deployed backend
+
+  try {
+    await axios.post(`${backendURL}/api/returns`, formData);
+    alert("Return submitted successfully!");
+    setFormData({
+      customerName: "",
+      productName: "",
+      quantity: 1,
+      reason: "",
+    });
+    setShowForm(false);
+    fetchReturns();
+  } catch (error) {
+    console.error("Error submitting return:", error);
+    setError("Failed to submit return.");
+  }
+};
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 p-4">

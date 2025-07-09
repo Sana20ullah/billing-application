@@ -6,26 +6,28 @@ export default function MonthAmountForm({ onClose }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  useEffect(() => {
-    fetch("http://localhost:5000/api/monthsales")
-      .then((res) => res.json())
-      .then((data) => {
-        // 👇 Validate the response
-        if (!Array.isArray(data)) {
-          throw new Error("Invalid data format received");
-        }
+useEffect(() => {
+  const BACKEND_URL = import.meta.env.PROD
+    ? "https://billing-backend-mp2p.onrender.com"
+    : "http://localhost:5000";
 
-        setMonthSales(data);
-        const sum = data.reduce((acc, item) => acc + (item.totalAmount || 0), 0);
-        setTotal(sum);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch month sales:", err);
-        setError("Failed to load monthly sales data.");
-        setMonthSales([]); // Ensure .map won't crash
-      })
-      .finally(() => setLoading(false));
-  }, []);
+  fetch(`${BACKEND_URL}/api/monthsales`)
+    .then((res) => res.json())
+    .then((data) => {
+      if (!Array.isArray(data)) throw new Error("Invalid data format");
+      setMonthSales(data);
+
+      const sum = data.reduce((acc, item) => acc + (item.totalAmount || 0), 0);
+      setTotal(sum);
+    })
+    .catch((err) => {
+      console.error("Failed to fetch month sales:", err);
+      setError("Failed to load monthly sales data.");
+      setMonthSales([]);
+    })
+    .finally(() => setLoading(false));
+}, []);
+
 
   if (loading) return <div className="text-white">Loading...</div>;
   if (error) return <div className="text-red-500">{error}</div>;

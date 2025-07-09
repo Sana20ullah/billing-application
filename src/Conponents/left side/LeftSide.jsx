@@ -99,20 +99,25 @@ const LeftSide = ({ onShopDetailsChange }) => {
     }
   };
 
-  const handleBarcodeSubmit = async (e) => {
-    e.preventDefault();
-    if (!barcodeInput) return;
-    try {
-      const res = await fetch(`http://localhost:5000/api/products/barcode/${barcodeInput}`);
-      if (!res.ok) throw new Error("Product not found");
-      const product = await res.json();
-      addProductToInvoice(product);
-      setBarcodeInput("");
-    } catch (err) {
-      alert("Failed to find product for this barcode.");
-      console.error(err);
-    }
-  };
+const backendURL = window.location.hostname === 'localhost'
+  ? 'http://localhost:5000'
+  : 'https://billing-backend-mp2p.onrender.com';
+
+const handleBarcodeSubmit = async (e) => {
+  e.preventDefault();
+  if (!barcodeInput) return;
+  try {
+    const res = await fetch(`${backendURL}/api/products/barcode/${barcodeInput}`);
+    if (!res.ok) throw new Error("Product not found");
+    const product = await res.json();
+    addProductToInvoice(product);
+    setBarcodeInput("");
+  } catch (err) {
+    alert("Failed to find product for this barcode.");
+    console.error(err);
+  }
+};
+
 
   // Common button styles based on RightSide design
   const buttonBaseClasses = 
@@ -167,7 +172,7 @@ const LeftSide = ({ onShopDetailsChange }) => {
   >
     <FaCalendarDay />
    <span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent font-semibold text-lg">
-  Day Amount
+  Daily sales
 </span>
 
   </button>
@@ -181,7 +186,7 @@ const LeftSide = ({ onShopDetailsChange }) => {
   >
     <FaCalendarAlt />
     <span className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text text-transparent font-semibold text-lg">
-  Month Amount
+  Monthly sales
 </span>
 
   </button>
@@ -195,7 +200,7 @@ const LeftSide = ({ onShopDetailsChange }) => {
 >
   <FaPercentage />
   <span className="bg-gradient-to-r from-green-400 via-teal-500 to-cyan-500 bg-clip-text text-transparent font-semibold text-lg">
-  Add Details
+  Edit Shop Info
 </span>
 
 </button>
@@ -207,7 +212,7 @@ const LeftSide = ({ onShopDetailsChange }) => {
 >
   <FaUsers />
   <span className="bg-gradient-to-r from-rose-500 via-red-500 to-orange-500 bg-clip-text text-transparent font-bold text-lg">
-  Return Sells
+  Sales Return
 </span>
 
 </button>

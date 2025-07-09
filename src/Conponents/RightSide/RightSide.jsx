@@ -41,20 +41,27 @@ const RightSide = () => {
     }
   };
 
-  const handlePrintAndSave = async () => {
-    const total = invoiceData.items.reduce((acc, cur) => acc + cur.amount, 0);
-    try {
-      await fetch("http://localhost:5000/api/daysales", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ totalAmount: total }),
-      });
-    } catch (error) {
-      console.error("Failed to save day sale:", error);
-    }
+ const handlePrintAndSave = async () => {
+  const total = invoiceData.items.reduce((acc, cur) => acc + cur.amount, 0);
 
-    navigate("/print");
-  };
+  const backendURL =
+    window.location.hostname === "localhost"
+      ? "http://localhost:5000"
+      : "https://billing-backend-mp2p.onrender.com"; // your Render backend
+
+  try {
+    await fetch(`${backendURL}/api/daysales`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ totalAmount: total }),
+    });
+  } catch (error) {
+    console.error("Failed to save day sale:", error);
+  }
+
+  navigate("/print");
+};
+
 
   const iconClasses =
     "w-6 h-6 text-purple-500 group-hover:text-white transition-colors duration-300";
