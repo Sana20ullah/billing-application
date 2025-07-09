@@ -328,18 +328,7 @@ const BillingPage = ({ invoiceOverride }) => {
           />
         </div>
 
-        {!invoiceOverride && (
-          <div className="text-center mt-4 print:hidden">
-            {/* You can add Reset or Save buttons here if needed */}
-            <button
-              onClick={resetBillValues}
-              className="text-red-600 hover:text-red-800"
-            >
-              Reset Bill Values
-            </button>
-          </div>
-        )}
-
+   
         <p className="mt-2 text-sm text-gray-600 text-center">
           Thank you for your purchase! We appreciate your business.
           <br />
