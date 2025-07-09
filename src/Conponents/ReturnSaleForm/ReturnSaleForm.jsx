@@ -13,19 +13,22 @@ export default function ReturnSaleForm({ onClose }) {
   const [returns, setReturns] = useState([]);
   const [error, setError] = useState(null);
 
+  // ✅ Always use backend hosted on Render (MongoDB live)
+  const backendURL = "https://billing-backend-mp2p.onrender.com";
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const fetchReturns = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/returns");
+      const res = await axios.get(`${backendURL}/api/returns`);
       if (Array.isArray(res.data)) {
         const oneWeekAgo = new Date();
         oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
         const filteredReturns = res.data.filter((item) => {
-          const returnDate = new Date(item.returnDate || item.date || item.createdAt);
+          const returnDate = new Date(item.createdAt);
           return returnDate >= oneWeekAgo;
         });
 
@@ -47,11 +50,6 @@ export default function ReturnSaleForm({ onClose }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const backendURL =
-      window.location.hostname === "localhost"
-        ? "http://localhost:5000"
-        : "https://billing-backend-mp2p.onrender.com"; // your deployed backend
-
     try {
       await axios.post(`${backendURL}/api/returns`, formData);
       alert("Return submitted successfully!");
@@ -137,7 +135,7 @@ export default function ReturnSaleForm({ onClose }) {
           </form>
         )}
 
-        <h3 className="font-bold text-lg mb-3">📦 Returned Products</h3>
+        <h3 className="font-bold text-lg mb-3">📦 Returned Products (Last 7 Days)</h3>
 
         {error && <p className="text-red-600 mb-3">{error}</p>}
 
