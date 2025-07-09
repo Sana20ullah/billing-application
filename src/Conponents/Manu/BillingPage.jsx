@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
 import { FaTrash } from "react-icons/fa";
 import { Html5QrcodeScanner } from "html5-qrcode";
+import { useNavigate } from "react-router-dom"; // <-- add useNavigate import
 import "./Manu.css";
 import { InvoiceContext } from "../invoice/InvoiceContext";
 
 const BillingPage = ({ invoiceOverride }) => {
+  const navigate = useNavigate(); // <-- initialize navigate
   const { invoiceData, setInvoiceData } = useContext(InvoiceContext);
   const [allProducts, setAllProducts] = useState([]);
   const [suggestions, setSuggestions] = useState({});
@@ -155,6 +157,51 @@ const BillingPage = ({ invoiceOverride }) => {
     alert("Invoice bill values reset.");
   };
 
+  // ===== NEW FUNCTION: Save invoice to backend and navigate to print page =====
+  const handleSaveAndPrint = async () => {
+  const items = invoiceData.items || [];
+  const total = items.reduce((acc, cur) => acc + (cur.amount || 0), 0);
+  const discounted = total - (total * (parseFloat(discount) || 0)) / 100;
+  const finalTotal = discounted + (discounted * (parseFloat(vat) || 0)) / 100;
+
+  const productsPayload = items.map(item => ({
+    name: item.item || "Unnamed",
+    qty: Number(item.qty) || 1,
+    price: Number(item.rate) || 0,
+  }));
+
+  const payload = {
+    products: productsPayload,
+    totalAmount: finalTotal,
+    customerName: customerName,
+    shop: shop,
+    vat: vat,
+    discount: discount,
+    changeMoney: changeMoney,
+    date: new Date(),
+  };
+
+  console.log("🔄 Sending payload to MongoDB:", payload); // ✅ Add debug
+
+  try {
+    const response = await fetch(`${backendURL}/api/daysales`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) throw new Error("Failed to save day sale");
+
+    await response.json();
+
+    alert("✅ Sale saved successfully!");
+    navigate("/print");
+  } catch (error) {
+    console.error("❌ Save error:", error);
+    alert("Error saving sale: " + error.message);
+  }
+};
+
   return (
     <div className="flex-1 flex justify-center items-start overflow-hidden print:p-5">
       <div className="print-area w-[700px] print:w-[300px] max-h-[95vh] print:max-h-full print:h-auto overflow-y-auto print:overflow-visible overflow-x-hidden print:overflow-x-hidden bg-white p-5 rounded shadow-md text-gray-800 print:break-words">
@@ -162,13 +209,12 @@ const BillingPage = ({ invoiceOverride }) => {
 
         <div className="flex justify-between items-start mb-6">
           <div>
-      <p className="font-semibold">{shop?.name || "Loading Shop..."}</p>
-<p>Address : {shop?.address || "-"}</p>
-<p>Phone : {shop?.phone || "-"}</p>
-<p>Invoice #: {invoiceOverride?.invoiceNumber || "INV-0001"}</p>
-<p>Date: {new Date().toLocaleString()}</p>
-<p className="flex items-center gap-2">
-
+            <p className="font-semibold">{shop?.name || "Loading Shop..."}</p>
+            <p>Address : {shop?.address || "-"}</p>
+            <p>Phone : {shop?.phone || "-"}</p>
+            <p>Invoice #: {invoiceOverride?.invoiceNumber || "INV-0001"}</p>
+            <p>Date: {new Date().toLocaleString()}</p>
+            <p className="flex items-center gap-2">
               Bill To:
               <input
                 type="text"
@@ -328,7 +374,9 @@ const BillingPage = ({ invoiceOverride }) => {
           />
         </div>
 
-   
+        {/* NEW Save & Print button */}
+    
+
         <p className="mt-2 text-sm text-gray-600 text-center">
           Thank you for your purchase! We appreciate your business.
           <br />
