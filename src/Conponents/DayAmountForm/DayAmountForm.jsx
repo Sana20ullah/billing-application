@@ -10,7 +10,9 @@ export default function DayAmountForm() {
       .then((res) => res.json())
       .then((data) => {
         setDaySales(data);
-        const sum = data.reduce((acc, item) => acc + item.totalAmount, 0);
+
+        // Calculate total of all daySales amounts if available
+        const sum = data.reduce((acc, item) => acc + (item.totalAmount || 0), 0);
         setTotal(sum);
         setLoading(false);
       })
@@ -24,39 +26,79 @@ export default function DayAmountForm() {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
-      <div className="bg-white w-[400px] rounded-xl p-6 text-black shadow-lg max-h-[90vh] overflow-auto">
-        <h2 className="text-xl font-bold mb-4 text-center">📆 Day Sales Records</h2>
+      <div className="bg-white w-full max-w-6xl rounded-xl p-6 text-black shadow-lg max-h-[90vh] overflow-auto">
+        <h2 className="text-2xl font-bold mb-6 text-center">📆 Day Sales Records</h2>
 
         <table className="w-full border-collapse text-left">
           <thead className="bg-gray-100 sticky top-0">
             <tr>
-              <th className="border px-3 py-2">Date</th>
-              <th className="border px-3 py-2">Total Amount (₹)</th>
+              <th className="border px-4 py-2">Date</th>
+              <th className="border px-4 py-2">Time</th>
+              <th className="border px-4 py-2">Product Name</th>
+              <th className="border px-4 py-2">Quantity</th>
+              <th className="border px-4 py-2">Price (₹)</th>
             </tr>
           </thead>
           <tbody>
-            {daySales.map((record, idx) => (
-              <tr
-                key={idx}
-                className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
-              >
-                <td className="border px-3 py-2">
-                  {new Date(record.date).toLocaleDateString()}
-                </td>
-                <td className="border px-3 py-2">
-                  ₹{record.totalAmount.toFixed(2)}
+            {daySales.length === 0 && (
+              <tr>
+                <td colSpan="5" className="text-center py-6 text-gray-600">
+                  No sales records found.
                 </td>
               </tr>
-            ))}
-            <tr className="bg-blue-600 text-white font-extrabold text-lg">
-              <td className="border px-3 py-3">Total</td>
-              <td className="border px-3 py-3">₹{total.toFixed(2)}</td>
-            </tr>
+            )}
+            {daySales.map((record, idx) => {
+              const saleDate = new Date(record.date);
+              return record.products && record.products.length > 0 ? (
+                record.products.map((prod, pidx) => (
+                  <tr
+                    key={`${idx}-${pidx}`}
+                    className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                  >
+                    {/* Show date/time only for the first product row */}
+                    {pidx === 0 && (
+                      <>
+                        <td className="border px-4 py-2" rowSpan={record.products.length}>
+                          {saleDate.toLocaleDateString()}
+                        </td>
+                        <td className="border px-4 py-2" rowSpan={record.products.length}>
+                          {saleDate.toLocaleTimeString()}
+                        </td>
+                      </>
+                    )}
+                    <td className="border px-4 py-2">{prod.name}</td>
+                    <td className="border px-4 py-2">{prod.qty}</td>
+                    <td className="border px-4 py-2">
+                      ₹{prod.price ? prod.price.toFixed(2) : "0.00"}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+                  <td className="border px-4 py-2">{saleDate.toLocaleDateString()}</td>
+                  <td className="border px-4 py-2">{saleDate.toLocaleTimeString()}</td>
+                  <td className="border px-4 py-2 text-gray-500 italic">No products</td>
+                  <td className="border px-4 py-2">-</td>
+                  <td className="border px-4 py-2">-</td>
+                </tr>
+              );
+            })}
           </tbody>
+          {/* Optional footer showing total sales */}
+          {total > 0 && (
+            <tfoot>
+              <tr className="bg-blue-600 text-white font-extrabold text-lg">
+                <td colSpan="4" className="border px-4 py-3 text-right">
+                  Total Amount
+                </td>
+                <td className="border px-4 py-3">₹{total.toFixed(2)}</td>
+              </tr>
+            </tfoot>
+          )}
         </table>
 
         <button
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded mt-6"
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded mt-6"
           onClick={() => window.location.reload()}
         >
           Close
