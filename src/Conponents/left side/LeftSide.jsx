@@ -84,24 +84,27 @@ const LeftSide = ({ onShopDetailsChange }) => {
     }
   };
 
-  const handleShopFormSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const res = await fetch(`${backendURL}/api/shop`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(shopData),
-      });
-      if (!res.ok) throw new Error("Failed to save shop data");
-      const updated = await res.json();
-      onShopDetailsChange(updated);
-      setShowShopForm(false);
-      alert("Shop info saved successfully!");
-    } catch (err) {
-      console.error("Failed to update shop:", err);
-      alert("Error saving shop info.");
-    }
-  };
+const handleShopFormSubmit = async (e) => {
+  e.preventDefault(); // Prevent default form submit
+  try {
+    const res = await fetch(`${backendURL}/api/shop`, {
+      method: "POST", // Sending data to backend
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(shopData), // Sending shop data
+    });
+
+    if (!res.ok) throw new Error("Failed to save shop data"); // If server returns error
+    const updated = await res.json(); // Response from backend
+
+    onShopDetailsChange(updated);  // Update parent or global state
+    setShowShopForm(false);        // Close the form UI
+    alert("Shop info saved successfully!"); // Notify user
+  } catch (err) {
+    console.error("Failed to update shop:", err);
+    alert("Error saving shop info."); // Notify error
+  }
+};
+
 
   const handleBarcodeSubmit = async (e) => {
     e.preventDefault();
