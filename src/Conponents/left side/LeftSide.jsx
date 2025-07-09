@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   FaBars,
   FaPlus,
@@ -25,7 +25,6 @@ const LeftSide = ({ onShopDetailsChange }) => {
   const [showCalculator, setShowCalculator] = useState(false);
   const [showShopForm, setShowShopForm] = useState(false);
   const [showDayForm, setShowDayForm] = useState(false);
-  const [shopData, setShopData] = useState({ name: "", address: "", phone: "" });
   const [showBarcodePopup, setShowBarcodePopup] = useState(false);
   const [text, setText] = useState("");
   const [showItemForm, setShowItemForm] = useState(false);
@@ -39,6 +38,31 @@ const LeftSide = ({ onShopDetailsChange }) => {
     barcode: "",
   });
   const [barcodeInput, setBarcodeInput] = useState("");
+  const [shopData, setShopData] = useState(null); // fetch only from MongoDB
+
+  const backendURL = window.location.hostname === "localhost"
+    ? "http://localhost:5000"
+    : "https://billing-backend-mp2p.onrender.com";
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    // Load shop info from MongoDB only once
+    const fetchShop = async () => {
+      try {
+        const res = await fetch(`${backendURL}/api/shop`);
+        if (!res.ok) throw new Error("Failed to fetch shop");
+        const data = await res.json();
+        setShopData(data);
+        onShopDetailsChange(data);
+      } catch (err) {
+        console.error("Failed to load shop:", err);
+        alert("Unable to load shop data.");
+      }
+    };
+
+    fetchShop();
+  }, [backendURL, onShopDetailsChange]);
 
   const toggleCalculator = () => setShowCalculator((prev) => !prev);
   const toggleShopForm = () => setShowShopForm((prev) => !prev);
@@ -51,21 +75,10 @@ const LeftSide = ({ onShopDetailsChange }) => {
     setItemFormData({ item: "", qty: "", rate: "", barcode: "" });
   };
 
-  const navigate = useNavigate();
-
-  const handleShopInputChange = (e) => {
-    const { name, value } = e.target;
-    setShopData((prev) => ({ ...prev, [name]: value }));
-  };
-
   const handleItemInputChange = (e) => {
     const { name, value } = e.target;
     setItemFormData((prev) => ({ ...prev, [name]: value }));
   };
-
-  const backendURL = window.location.hostname === 'localhost'
-    ? 'http://localhost:5000'
-    : 'https://billing-backend-mp2p.onrender.com';
 
   const handleItemFormSubmit = async (e) => {
     e.preventDefault();
@@ -84,27 +97,30 @@ const LeftSide = ({ onShopDetailsChange }) => {
     }
   };
 
-const handleShopFormSubmit = async (e) => {
-  e.preventDefault(); // Prevent default form submit
-  try {
-    const res = await fetch(`${backendURL}/api/shop`, {
-      method: "POST", // Sending data to backend
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(shopData), // Sending shop data
-    });
+  const handleShopFormSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`${backendURL}/api/shop`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(shopData),
+      });
 
-    if (!res.ok) throw new Error("Failed to save shop data"); // If server returns error
-    const updated = await res.json(); // Response from backend
+      if (!res.ok) throw new Error("Failed to save shop data");
+      const updated = await res.json();
+      onShopDetailsChange(updated);
+      setShowShopForm(false);
+      alert("Shop info saved successfully!");
+    } catch (err) {
+      console.error("Failed to update shop:", err);
+      alert("Error saving shop info.");
+    }
+  };
 
-    onShopDetailsChange(updated);  // Update parent or global state
-    setShowShopForm(false);        // Close the form UI
-    alert("Shop info saved successfully!"); // Notify user
-  } catch (err) {
-    console.error("Failed to update shop:", err);
-    alert("Error saving shop info."); // Notify error
-  }
-};
-
+  const handleShopInputChange = (e) => {
+    const { name, value } = e.target;
+    setShopData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleBarcodeSubmit = async (e) => {
     e.preventDefault();
@@ -121,8 +137,7 @@ const handleShopFormSubmit = async (e) => {
     }
   };
 
-  // Common button styles based on RightSide design
-  const buttonBaseClasses = 
+  const buttonBaseClasses =
     "relative px-8 py-3 mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] flex items-center gap-2";
 
   return (

@@ -4,51 +4,44 @@ import { Html5QrcodeScanner } from "html5-qrcode";
 import "./Manu.css";
 import { InvoiceContext } from "../invoice/InvoiceContext";
 
-const BillingPage = ({ invoiceOverride, shopDetails }) => {
+const BillingPage = ({ invoiceOverride }) => {
   const { invoiceData, setInvoiceData } = useContext(InvoiceContext);
   const [allProducts, setAllProducts] = useState([]);
   const [suggestions, setSuggestions] = useState({});
   const items = invoiceData.items || [];
 
-  const [shop, setShop] = useState(
-    invoiceOverride?.shop || shopDetails || {
-      name: "Shop Name",
-      address: "123 Main Street",
-      phone: "+966 123 456 789",
-    }
-  );
-
+  const [shop, setShop] = useState(invoiceOverride?.shop || null);
   const [vat, setVat] = useState(invoiceOverride?.vat || 0);
   const [discount, setDiscount] = useState(invoiceOverride?.discount || 0);
   const [changeMoney, setChangeMoney] = useState(invoiceOverride?.changeMoney || 0);
   const [customerName, setCustomerName] = useState(invoiceOverride?.customerName || "");
 
-  // Dynamically set backend URL
   const backendURL =
     window.location.hostname === "localhost"
       ? "http://localhost:5000"
       : "https://billing-backend-mp2p.onrender.com";
 
-  // Fetch all products once on mount for suggestions
+  // Fetch shop from MongoDB
+  useEffect(() => {
+    if (!invoiceOverride) {
+      fetch(`${backendURL}/api/shop`)
+        .then((res) => res.json())
+        .then(setShop)
+        .catch((err) => console.error("Failed to load shop from MongoDB", err));
+    }
+  }, [backendURL, invoiceOverride]);
+
+  // Fetch all products
   useEffect(() => {
     fetch(`${backendURL}/api/products`)
       .then((res) => res.json())
       .then(setAllProducts)
-      .catch((err) => console.error("Failed to load products for suggestions", err));
+      .catch((err) => console.error("Failed to load products", err));
   }, [backendURL]);
 
-  // Sync shop from props
+  // Sync invoiceData from shop and state changes
   useEffect(() => {
-    if (invoiceOverride?.shop) {
-      setShop(invoiceOverride.shop);
-    } else if (shopDetails) {
-      setShop(shopDetails);
-    }
-  }, [invoiceOverride, shopDetails]);
-
-  // Sync invoiceData when vat, discount, changeMoney, customerName, or shop changes (unless overridden)
-  useEffect(() => {
-    if (!invoiceOverride) {
+    if (!invoiceOverride && shop) {
       setInvoiceData((prev) => ({
         ...prev,
         vat,
@@ -60,13 +53,11 @@ const BillingPage = ({ invoiceOverride, shopDetails }) => {
     }
   }, [vat, discount, changeMoney, customerName, shop, invoiceOverride, setInvoiceData]);
 
-  // Calculations
   const total = items.reduce((acc, cur) => acc + (cur.amount || 0), 0);
   const discounted = total - (total * (parseFloat(discount) || 0)) / 100;
   const finalTotal = discounted + (discounted * (parseFloat(vat) || 0)) / 100;
   const remaining = changeMoney - finalTotal;
 
-  // Add new empty item
   const addItem = () => {
     const newItem = { item: "", qty: 1, rate: 0, amount: 0 };
     setInvoiceData((prev) => ({
@@ -75,7 +66,6 @@ const BillingPage = ({ invoiceOverride, shopDetails }) => {
     }));
   };
 
-  // Remove item by index
   const removeItem = (index) => {
     const updated = [...items];
     updated.splice(index, 1);
@@ -85,7 +75,6 @@ const BillingPage = ({ invoiceOverride, shopDetails }) => {
     }));
   };
 
-  // Update item field and recalc amount
   const updateItem = (index, key, value) => {
     const updated = [...items];
     updated[index] = { ...updated[index], [key]: value };
@@ -112,7 +101,6 @@ const BillingPage = ({ invoiceOverride, shopDetails }) => {
     }));
   };
 
-  // Select suggestion and fill item fields
   const handleSuggestionClick = (index, product) => {
     const updated = [...items];
     updated[index] = {
@@ -127,22 +115,15 @@ const BillingPage = ({ invoiceOverride, shopDetails }) => {
     setSuggestions((prev) => ({ ...prev, [index]: [] }));
   };
 
-  // Barcode scanner setup
   useEffect(() => {
     const scanner = new Html5QrcodeScanner("scanner", { fps: 10, qrbox: 250 });
 
     scanner.render(
       async (decodedText) => {
-        console.log("Scanned:", decodedText);
         try {
           const res = await fetch(`${backendURL}/api/products/${decodedText}`);
-          if (!res.ok) {
-            const text = await res.text();
-            console.error("Fetch failed:", text);
-            throw new Error("Product not found");
-          }
+          if (!res.ok) throw new Error("Product not found");
           const product = await res.json();
-          // Add scanned product to invoice items
           setInvoiceData((prev) => ({
             ...prev,
             items: [...(prev.items || []), {
@@ -167,7 +148,6 @@ const BillingPage = ({ invoiceOverride, shopDetails }) => {
     };
   }, [backendURL, setInvoiceData]);
 
-  // Reset invoice values helper
   const resetBillValues = () => {
     setVat(0);
     setDiscount(0);
