@@ -63,10 +63,14 @@ const LeftSide = ({ onShopDetailsChange }) => {
     setItemFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const backendURL = window.location.hostname === 'localhost'
+    ? 'http://localhost:5000'
+    : 'https://billing-backend-mp2p.onrender.com';
+
   const handleItemFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:5000/api/products", {
+      const res = await fetch(`${backendURL}/api/products`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(itemFormData),
@@ -83,7 +87,7 @@ const LeftSide = ({ onShopDetailsChange }) => {
   const handleShopFormSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:5000/api/shop", {
+      const res = await fetch(`${backendURL}/api/shop`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(shopData),
@@ -99,25 +103,20 @@ const LeftSide = ({ onShopDetailsChange }) => {
     }
   };
 
-const backendURL = window.location.hostname === 'localhost'
-  ? 'http://localhost:5000'
-  : 'https://billing-backend-mp2p.onrender.com';
-
-const handleBarcodeSubmit = async (e) => {
-  e.preventDefault();
-  if (!barcodeInput) return;
-  try {
-    const res = await fetch(`${backendURL}/api/products/barcode/${barcodeInput}`);
-    if (!res.ok) throw new Error("Product not found");
-    const product = await res.json();
-    addProductToInvoice(product);
-    setBarcodeInput("");
-  } catch (err) {
-    alert("Failed to find product for this barcode.");
-    console.error(err);
-  }
-};
-
+  const handleBarcodeSubmit = async (e) => {
+    e.preventDefault();
+    if (!barcodeInput) return;
+    try {
+      const res = await fetch(`${backendURL}/api/products/barcode/${barcodeInput}`);
+      if (!res.ok) throw new Error("Product not found");
+      const product = await res.json();
+      addProductToInvoice(product);
+      setBarcodeInput("");
+    } catch (err) {
+      alert("Failed to find product for this barcode.");
+      console.error(err);
+    }
+  };
 
   // Common button styles based on RightSide design
   const buttonBaseClasses = 
@@ -128,121 +127,102 @@ const handleBarcodeSubmit = async (e) => {
       <div className="w-64 h-160 bg-black text-white p-4 flex flex-col gap-4 shadow-2xl ">
         {showProductsList && <ProductsList onClose={() => setShowProductsList(false)} />}
 
-
-<button 
-  onClick={() => setShowProductsList(true)}
-  className={`absolute top-0 left-1 ${buttonBaseClasses}`}
->
-  <FaBars className="mr-2" />
- <span className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 bg-clip-text text-transparent font-bold text-xl">
-  Products List
-</span>
-
-</button>
-
+        <button 
+          onClick={() => setShowProductsList(true)}
+          className={`absolute top-0 left-1 ${buttonBaseClasses}`}
+        >
+          <FaBars className="mr-2" />
+          <span className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 bg-clip-text text-transparent font-bold text-xl">
+            Products List
+          </span>
+        </button>
 
         <button
           onClick={toggleItemForm}
-         
-        className={`absolute -top-5 left-1 ${buttonBaseClasses}`}
-
+          className={`absolute -top-5 left-1 ${buttonBaseClasses}`}
         >
           <FaPlus />
           <span className="bg-gradient-to-r from-green-400 via-lime-400 to-yellow-400 bg-clip-text text-transparent font-semibold text-lg">
-  Items Add
-</span>
-
+            Items Add
+          </span>
         </button>
 
-       <button
-  onClick={toggleCalculator}
-  className={`absolute -top-10 left-1 ${buttonBaseClasses} ${showCalculator ? "bg-purple-700" : ""}`}
->
-  <FaCalculator />
-  <span className="bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 bg-clip-text text-transparent font-bold text-lg">
-  Calculator
-</span>
+        <button
+          onClick={toggleCalculator}
+          className={`absolute -top-10 left-1 ${buttonBaseClasses} ${showCalculator ? "bg-purple-700" : ""}`}
+        >
+          <FaCalculator />
+          <span className="bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 bg-clip-text text-transparent font-bold text-lg">
+            Calculator
+          </span>
+        </button>
 
-</button>
-
-
- <button
-    onClick={() => setShowDayForm(true)}
-    className={`absolute -top-15 -right-1 ${buttonBaseClasses}`}
-  >
-    <FaCalendarDay />
-   <span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent font-semibold text-lg">
-  Daily sales
-</span>
-
-  </button>
-
+        <button
+          onClick={() => setShowDayForm(true)}
+          className={`absolute -top-15 -right-1 ${buttonBaseClasses}`}
+        >
+          <FaCalendarDay />
+          <span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent font-semibold text-lg">
+            Daily sales
+          </span>
+        </button>
 
         {showDayForm && <DayAmountForm />}
 
-       <button
-    onClick={() => setShowMonthForm(true)}
-    className={`absolute bottom-20 -right-1 ${buttonBaseClasses}`}
-  >
-    <FaCalendarAlt />
-    <span className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text text-transparent font-semibold text-lg">
-  Monthly sales
-</span>
-
-  </button>
+        <button
+          onClick={() => setShowMonthForm(true)}
+          className={`absolute bottom-20 -right-1 ${buttonBaseClasses}`}
+        >
+          <FaCalendarAlt />
+          <span className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text text-transparent font-semibold text-lg">
+            Monthly sales
+          </span>
+        </button>
         {showMonthForm && (
           <MonthAmountForm onClose={() => setShowMonthForm(false)} />
         )}
 
-    <button
-  onClick={toggleShopForm}
-  className={`absolute -top-25 left-0 ${buttonBaseClasses}`}
->
-  <FaPercentage />
-  <span className="bg-gradient-to-r from-green-400 via-teal-500 to-cyan-500 bg-clip-text text-transparent font-semibold text-lg">
-  Edit Shop Info
-</span>
+        <button
+          onClick={toggleShopForm}
+          className={`absolute -top-25 left-0 ${buttonBaseClasses}`}
+        >
+          <FaPercentage />
+          <span className="bg-gradient-to-r from-green-400 via-teal-500 to-cyan-500 bg-clip-text text-transparent font-semibold text-lg">
+            Edit Shop Info
+          </span>
+        </button>
 
-</button>
-
-
-      <button
-  onClick={() => setShowReturnForm(true)}
-  className={`absolute -top-30 -left0 ${buttonBaseClasses}`}
->
-  <FaUsers />
-  <span className="bg-gradient-to-r from-rose-500 via-red-500 to-orange-500 bg-clip-text text-transparent font-bold text-lg">
-  Sales Return
-</span>
-
-</button>
-
+        <button
+          onClick={() => setShowReturnForm(true)}
+          className={`absolute -top-30 -left0 ${buttonBaseClasses}`}
+        >
+          <FaUsers />
+          <span className="bg-gradient-to-r from-rose-500 via-red-500 to-orange-500 bg-clip-text text-transparent font-bold text-lg">
+            Sales Return
+          </span>
+        </button>
 
         {showReturnForm && <ReturnSaleForm onClose={() => setShowReturnForm(false)} />}
 
-      <button
-  onClick={() => navigate("/document")}
-  className={`absolute -top-35 left-0 ${buttonBaseClasses}`}
->
-  📄
-  <span className="bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500 bg-clip-text text-transparent font-semibold text-lg">
-   Document
-</span>
+        <button
+          onClick={() => navigate("/document")}
+          className={`absolute -top-35 left-0 ${buttonBaseClasses}`}
+        >
+          📄
+          <span className="bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500 bg-clip-text text-transparent font-semibold text-lg">
+            Document
+          </span>
+        </button>
 
-</button>
-
-
-     <button
-  onClick={toggleBarcodePopup}
-  className={`absolute -top-40 left-0 ${buttonBaseClasses}`}
->
-  <FaFilePdf />
- <span className="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent font-bold text-lg">
-  Create Barcode
-</span>
-
-</button>
-
+        <button
+          onClick={toggleBarcodePopup}
+          className={`absolute -top-40 left-0 ${buttonBaseClasses}`}
+        >
+          <FaFilePdf />
+          <span className="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent font-bold text-lg">
+            Create Barcode
+          </span>
+        </button>
       </div>
 
       {showCalculator && (

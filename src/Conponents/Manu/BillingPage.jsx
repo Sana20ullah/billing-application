@@ -9,6 +9,7 @@ const BillingPage = ({ invoiceOverride, shopDetails }) => {
   const [allProducts, setAllProducts] = useState([]);
   const [suggestions, setSuggestions] = useState({});
   const items = invoiceData.items || [];
+
   const [shop, setShop] = useState(
     invoiceOverride?.shop || shopDetails || {
       name: "Shop Name",
@@ -16,24 +17,27 @@ const BillingPage = ({ invoiceOverride, shopDetails }) => {
       phone: "+966 123 456 789",
     }
   );
+
   const [vat, setVat] = useState(invoiceOverride?.vat || 0);
   const [discount, setDiscount] = useState(invoiceOverride?.discount || 0);
   const [changeMoney, setChangeMoney] = useState(invoiceOverride?.changeMoney || 0);
   const [customerName, setCustomerName] = useState(invoiceOverride?.customerName || "");
 
-useEffect(() => {
+  // Dynamically set backend URL
   const backendURL =
     window.location.hostname === "localhost"
       ? "http://localhost:5000"
       : "https://billing-backend-mp2p.onrender.com";
 
-  fetch(`${backendURL}/api/products`)
-    .then((res) => res.json())
-    .then((data) => setAllProducts(data))
-    .catch((err) => console.error("Failed to load products for suggestions", err));
-}, []);
+  // Fetch all products once on mount for suggestions
+  useEffect(() => {
+    fetch(`${backendURL}/api/products`)
+      .then((res) => res.json())
+      .then(setAllProducts)
+      .catch((err) => console.error("Failed to load products for suggestions", err));
+  }, [backendURL]);
 
-
+  // Sync shop from props
   useEffect(() => {
     if (invoiceOverride?.shop) {
       setShop(invoiceOverride.shop);
@@ -42,31 +46,49 @@ useEffect(() => {
     }
   }, [invoiceOverride, shopDetails]);
 
+  // Sync invoiceData when vat, discount, changeMoney, customerName, or shop changes (unless overridden)
   useEffect(() => {
     if (!invoiceOverride) {
-      setInvoiceData({ ...invoiceData, vat, discount, changeMoney, customerName, shop });
+      setInvoiceData((prev) => ({
+        ...prev,
+        vat,
+        discount,
+        changeMoney,
+        customerName,
+        shop,
+      }));
     }
-  }, [vat, discount, changeMoney, customerName, shop]);
+  }, [vat, discount, changeMoney, customerName, shop, invoiceOverride, setInvoiceData]);
 
-  const total = items.reduce((acc, cur) => acc + cur.amount, 0);
+  // Calculations
+  const total = items.reduce((acc, cur) => acc + (cur.amount || 0), 0);
   const discounted = total - (total * (parseFloat(discount) || 0)) / 100;
   const finalTotal = discounted + (discounted * (parseFloat(vat) || 0)) / 100;
   const remaining = changeMoney - finalTotal;
 
+  // Add new empty item
   const addItem = () => {
     const newItem = { item: "", qty: 1, rate: 0, amount: 0 };
-    setInvoiceData((prev) => ({ ...prev, items: [...prev.items, newItem] }));
+    setInvoiceData((prev) => ({
+      ...prev,
+      items: [...(prev.items || []), newItem],
+    }));
   };
 
+  // Remove item by index
   const removeItem = (index) => {
     const updated = [...items];
     updated.splice(index, 1);
-    setInvoiceData((prev) => ({ ...prev, items: updated }));
+    setInvoiceData((prev) => ({
+      ...prev,
+      items: updated,
+    }));
   };
 
+  // Update item field and recalc amount
   const updateItem = (index, key, value) => {
     const updated = [...items];
-    updated[index][key] = value;
+    updated[index] = { ...updated[index], [key]: value };
 
     if (key === "item") {
       if (value.trim() === "") {
@@ -84,9 +106,13 @@ useEffect(() => {
       setSuggestions((prev) => ({ ...prev, [index]: [] }));
     }
 
-    setInvoiceData((prev) => ({ ...prev, items: updated }));
+    setInvoiceData((prev) => ({
+      ...prev,
+      items: updated,
+    }));
   };
 
+  // Select suggestion and fill item fields
   const handleSuggestionClick = (index, product) => {
     const updated = [...items];
     updated[index] = {
@@ -101,42 +127,35 @@ useEffect(() => {
     setSuggestions((prev) => ({ ...prev, [index]: [] }));
   };
 
-  const resetBillValues = () => {
-    setVat(0);
-    setDiscount(0);
-    setChangeMoney(0);
-    alert("Invoice bill values reset.");
-  };
-
-  // Barcode scanner integration
+  // Barcode scanner setup
   useEffect(() => {
-   
-
     const scanner = new Html5QrcodeScanner("scanner", { fps: 10, qrbox: 250 });
 
     scanner.render(
       async (decodedText) => {
         console.log("Scanned:", decodedText);
-       try {
-const res = await fetch(`https://34a2-46-143-183-105.ngrok-free.app/api/products/${decodedText}`);
-
-
-
-  if (!res.ok) {
-    const text = await res.text();  // get raw response text
-    console.error('Fetch failed with response:', text);
-    throw new Error(`Product not found`);
-  }
-
-  const product = await res.json();
-  // ... rest of code
-} catch (err) {
-  alert("Scan failed: " + err.message);
-}
-
-
-        // Remove scanner.clear() here if you want to keep scanning continuously
-        // scanner.clear();
+        try {
+          const res = await fetch(`${backendURL}/api/products/${decodedText}`);
+          if (!res.ok) {
+            const text = await res.text();
+            console.error("Fetch failed:", text);
+            throw new Error("Product not found");
+          }
+          const product = await res.json();
+          // Add scanned product to invoice items
+          setInvoiceData((prev) => ({
+            ...prev,
+            items: [...(prev.items || []), {
+              item: product.name,
+              qty: 1,
+              rate: product.rate,
+              barcode: product.barcode,
+              amount: product.rate,
+            }],
+          }));
+        } catch (err) {
+          alert("Scan failed: " + err.message);
+        }
       },
       (error) => {
         console.warn(error);
@@ -146,7 +165,15 @@ const res = await fetch(`https://34a2-46-143-183-105.ngrok-free.app/api/products
     return () => {
       scanner.clear().catch(() => {});
     };
-  }, []);
+  }, [backendURL, setInvoiceData]);
+
+  // Reset invoice values helper
+  const resetBillValues = () => {
+    setVat(0);
+    setDiscount(0);
+    setChangeMoney(0);
+    alert("Invoice bill values reset.");
+  };
 
   return (
     <div className="flex-1 flex justify-center items-start overflow-hidden print:p-5">
@@ -167,7 +194,7 @@ const res = await fetch(`https://34a2-46-143-183-105.ngrok-free.app/api/products
                 placeholder="Customer Name"
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                className=" border-gray-400 outline-none font-semibold w-48"
+                className="border-gray-400 outline-none font-semibold w-48"
               />
             </p>
           </div>
@@ -220,6 +247,7 @@ const res = await fetch(`https://34a2-46-143-183-105.ngrok-free.app/api/products
                 className="px-2 py-1 ml-22 w-14 border-b border-gray-400 outline-none bg-transparent print:border-none print:ml-7"
                 value={item.qty}
                 onChange={(e) => updateItem(index, "qty", e.target.value)}
+                min={0}
               />
               <input
                 type="number"
@@ -227,9 +255,11 @@ const res = await fetch(`https://34a2-46-143-183-105.ngrok-free.app/api/products
                 placeholder="0"
                 value={item.rate === 0 ? "" : item.rate}
                 onChange={(e) => updateItem(index, "rate", e.target.value)}
+                min={0}
+                step="0.01"
               />
               <div className="text-right pr-2 ml-10 w-25 print:-ml-5">
-                {item.amount.toFixed(2)}
+                {(item.amount || 0).toFixed(2)}
               </div>
               {!invoiceOverride && (
                 <button
@@ -265,6 +295,7 @@ const res = await fetch(`https://34a2-46-143-183-105.ngrok-free.app/api/products
             }
             className="border-b border-gray-400 px-3 py-1 w-32 text-right outline-none bg-transparent print:border-none"
             disabled={!!invoiceOverride}
+            min={0}
           />
         </div>
 
@@ -279,6 +310,7 @@ const res = await fetch(`https://34a2-46-143-183-105.ngrok-free.app/api/products
             }
             className="border-b border-gray-400 px-3 py-1 w-32 text-right outline-none print:border-0"
             disabled={!!invoiceOverride}
+            min={0}
           />
         </div>
 
@@ -301,6 +333,7 @@ const res = await fetch(`https://34a2-46-143-183-105.ngrok-free.app/api/products
             onChange={(e) => setChangeMoney(parseFloat(e.target.value) || 0)}
             className="border-0 border-b border-solid border-black px-3 py-1 w-32 text-right rounded-none print:border-b-0"
             disabled={!!invoiceOverride}
+            min={0}
           />
         </div>
 
@@ -317,6 +350,12 @@ const res = await fetch(`https://34a2-46-143-183-105.ngrok-free.app/api/products
         {!invoiceOverride && (
           <div className="text-center mt-4 print:hidden">
             {/* You can add Reset or Save buttons here if needed */}
+            <button
+              onClick={resetBillValues}
+              className="text-red-600 hover:text-red-800"
+            >
+              Reset Bill Values
+            </button>
           </div>
         )}
 

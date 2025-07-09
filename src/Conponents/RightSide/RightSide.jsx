@@ -41,27 +41,26 @@ const RightSide = () => {
     }
   };
 
- const handlePrintAndSave = async () => {
-  const total = invoiceData.items.reduce((acc, cur) => acc + cur.amount, 0);
+  const handlePrintAndSave = async () => {
+    const total = invoiceData.items.reduce((acc, cur) => acc + cur.amount, 0);
 
-  const backendURL =
-    window.location.hostname === "localhost"
-      ? "http://localhost:5000"
-      : "https://billing-backend-mp2p.onrender.com"; // your Render backend
+    const backendURL =
+      window.location.hostname === "localhost"
+        ? "http://localhost:5000"
+        : "https://billing-backend-mp2p.onrender.com"; // your Render backend
 
-  try {
-    await fetch(`${backendURL}/api/daysales`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ totalAmount: total }),
-    });
-  } catch (error) {
-    console.error("Failed to save day sale:", error);
-  }
+    try {
+      await fetch(`${backendURL}/api/daysales`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ totalAmount: total }),
+      });
+    } catch (error) {
+      console.error("Failed to save day sale:", error);
+    }
 
-  navigate("/print");
-};
-
+    navigate("/print");
+  };
 
   const iconClasses =
     "w-6 h-6 text-purple-500 group-hover:text-white transition-colors duration-300";
@@ -76,8 +75,8 @@ const RightSide = () => {
       >
         <FaEye className={iconClasses} />
         <span className="bg-gradient-to-r from-teal-400 via-emerald-500 to-lime-500 bg-clip-text text-transparent font-semibold text-lg">
-  Preview
-</span>
+          Preview
+        </span>
 
         <span className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-500/20 to-indigo-500/20"></span>
       </button>
@@ -89,8 +88,8 @@ const RightSide = () => {
       >
         <FaUserShield className={iconClasses} />
         <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent font-bold text-lg">
-  Admin
-</span>
+          Admin
+        </span>
 
         <span className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-500/20 to-indigo-500/20"></span>
       </button>
@@ -102,8 +101,8 @@ const RightSide = () => {
       >
         <FaQrcode className={iconClasses} />
         <span className="bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 bg-clip-text text-transparent font-semibold text-lg">
-  Add QR Code
-</span>
+          Add QR Code
+        </span>
 
         <span className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-500/20 to-indigo-500/20"></span>
       </button>
@@ -116,8 +115,8 @@ const RightSide = () => {
         <FaShareAlt className={`ml-9 ${iconClasses}`} />
 
         <span className="bg-gradient-to-r from-green-400 ml- via-blue-500 to-purple-500 bg-clip-text text-transparent font-semibold">
-  Share
-</span>
+          Share
+        </span>
 
         <span className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-500/20 to-indigo-500/20"></span>
       </button>
@@ -186,34 +185,33 @@ const RightSide = () => {
         >
           <FaPrint className="w-10 ml-15 h-6 text-purple-500 group-hover:text-white transition-colors duration-300" />
           <span className="bg-gradient-to-r text-22 from-orange-400 via-red-500 to-pink-500 bg-clip-text text-transparent font-semibold">
-  Print
-</span>
+            Print
+          </span>
 
           <span className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-500/20 to-indigo-500/20"></span>
         </button>
 
         {/* Reset Button */}
-<button
-  onClick={handleReset}
-  className="relative w-32 mt-17 h-12 text-[14px] font-bold text-white ml-15
-    bg-gradient-to-r from-red-500 via-pink-600 to-red-700
-    rounded-lg shadow-lg transition-all duration-300
-    hover:from-red-600 hover:via-pink-700 hover:to-red-800
-    active:scale-95 focus:outline-none"
-  title="Reset Invoice"
->
-  Reset
-  <div
-    className="pointer-events-none absolute inset-0 rounded-lg
-      border-4 border-double
-      border-gradient-to-r from-pink-500 via-red-600 to-pink-500
-      shadow-[0_0_15px_5px_rgba(255,105,135,0.8)]
-      clip-path-[polygon(30%_0%,70%_0%,100%_30%,100%_70%,70%_100%,30%_100%,0%_70%,0%_30%)]"
-  ></div>
-  <span className="absolute right-1 top-1 w-5 h-5 border-l-4 border-t-4 border-pink-400 rotate-45"></span>
-  <span className="absolute left-1 bottom-1 w-5 h-5 border-r-4 border-b-4 border-pink-400 -rotate-45"></span>
-</button>
-
+        <button
+          onClick={handleReset}
+          className="relative w-32 mt-17 h-12 text-[14px] font-bold text-white ml-15
+            bg-gradient-to-r from-red-500 via-pink-600 to-red-700
+            rounded-lg shadow-lg transition-all duration-300
+            hover:from-red-600 hover:via-pink-700 hover:to-red-800
+            active:scale-95 focus:outline-none"
+          title="Reset Invoice"
+        >
+          Reset
+          <div
+            className="pointer-events-none absolute inset-0 rounded-lg
+              border-4 border-double
+              border-gradient-to-r from-pink-500 via-red-600 to-pink-500
+              shadow-[0_0_15px_5px_rgba(255,105,135,0.8)]
+              clip-path-[polygon(30%_0%,70%_0%,100%_30%,100%_70%,70%_100%,30%_100%,0%_70%,0%_30%)]"
+          ></div>
+          <span className="absolute right-1 top-1 w-5 h-5 border-l-4 border-t-4 border-pink-400 rotate-45"></span>
+          <span className="absolute left-1 bottom-1 w-5 h-5 border-r-4 border-b-4 border-pink-400 -rotate-45"></span>
+        </button>
 
       </div>
 
