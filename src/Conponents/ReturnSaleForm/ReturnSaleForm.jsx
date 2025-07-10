@@ -13,7 +13,7 @@ export default function ReturnSaleForm({ onClose }) {
   const [returns, setReturns] = useState([]);
   const [error, setError] = useState(null);
 
-  // Use environment variable or localhost fallback
+  // Use environment variable or fallback
   const backendURL =
     import.meta.env.VITE_BACKEND_URL ||
     (window.location.hostname === "localhost" ? "http://localhost:5000" : "");
@@ -90,10 +90,7 @@ export default function ReturnSaleForm({ onClose }) {
         </button>
 
         {showForm && (
-          <form
-            onSubmit={handleSubmit}
-            className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8"
-          >
+          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
             <input
               type="text"
               name="customerName"
