@@ -1,8 +1,22 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+
+export default function ReturnSaleForm({ onClose }) {
+  const [showForm, setShowForm] = useState(false);
+  const [formData, setFormData] = useState({
+    customerName: "",
+    productName: "",
+    quantity: 1,
+    reason: "",
+  });
+
   const [returns, setReturns] = useState([]);
   const [error, setError] = useState(null);
 
   // Use environment variable or localhost fallback
-  const backendURL = import.meta.env.VITE_BACKEND_URL || (window.location.hostname === "localhost" ? "http://localhost:5000" : "");
+  const backendURL =
+    import.meta.env.VITE_BACKEND_URL ||
+    (window.location.hostname === "localhost" ? "http://localhost:5000" : "");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -76,7 +90,10 @@
         </button>
 
         {showForm && (
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <form
+            onSubmit={handleSubmit}
+            className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8"
+          >
             <input
               type="text"
               name="customerName"
