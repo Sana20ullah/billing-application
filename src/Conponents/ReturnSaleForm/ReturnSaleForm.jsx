@@ -1,20 +1,8 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-
-export default function ReturnSaleForm({ onClose }) {
-  const [showForm, setShowForm] = useState(false);
-  const [formData, setFormData] = useState({
-    customerName: "",
-    productName: "",
-    quantity: 1,
-    reason: "",
-  });
-
   const [returns, setReturns] = useState([]);
   const [error, setError] = useState(null);
 
-  // ✅ Always use backend hosted on Render (MongoDB live)
-  const backendURL = "https://billing-backend-mp2p.onrender.com";
+  // Use environment variable or localhost fallback
+  const backendURL = import.meta.env.VITE_BACKEND_URL || (window.location.hostname === "localhost" ? "http://localhost:5000" : "");
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });

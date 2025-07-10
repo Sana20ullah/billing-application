@@ -40,9 +40,8 @@ const LeftSide = ({ onShopDetailsChange }) => {
   const [barcodeInput, setBarcodeInput] = useState("");
   const [shopData, setShopData] = useState(null); // fetch only from MongoDB
 
-  const backendURL = window.location.hostname === "localhost"
-    ? "http://localhost:5000"
-    : "https://billing-backend-mp2p.onrender.com";
+  // Use environment variable for backend URL; fallback to localhost for dev
+  const backendURL = import.meta.env.VITE_BACKEND_URL || (window.location.hostname === "localhost" ? "http://localhost:5000" : "");
 
   const navigate = useNavigate();
 

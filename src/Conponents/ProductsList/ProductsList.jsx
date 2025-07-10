@@ -4,13 +4,11 @@ import { FaTrash } from "react-icons/fa";
 const ProductsList = ({ onClose }) => {
   const [products, setProducts] = useState([]);
 
-  const fetchProducts = () => {
-    const backendURL =
-      window.location.hostname === "localhost"
-        ? "http://localhost:5000"
-        : "https://billing-backend-mp2p.onrender.com";
+  // Use the env variable or localhost fallback
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || (window.location.hostname === "localhost" ? "http://localhost:5000" : "");
 
-    fetch(`${backendURL}/api/products`)
+  const fetchProducts = () => {
+    fetch(`${BACKEND_URL}/api/products`)
       .then((res) => res.json())
       .then(setProducts)
       .catch((err) => {
@@ -22,10 +20,6 @@ const ProductsList = ({ onClose }) => {
   useEffect(() => {
     fetchProducts();
   }, []);
-
-  const BACKEND_URL = import.meta.env.PROD
-    ? "https://billing-backend-mp2p.onrender.com"
-    : "http://localhost:5000";
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
@@ -44,7 +38,6 @@ const ProductsList = ({ onClose }) => {
       console.error(err);
     }
   };
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-auto">
       <div className="bg-white text-black p-6 rounded shadow-lg w-[600px] max-h-[80vh] overflow-y-auto">

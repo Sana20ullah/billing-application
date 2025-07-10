@@ -7,9 +7,8 @@ export default function MonthAmountForm({ onClose }) {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const BACKEND_URL = import.meta.env.PROD
-      ? "https://billing-backend-mp2p.onrender.com"
-      : "http://localhost:5000";
+    // Use VITE_BACKEND_URL from .env or fallback to localhost for dev
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
     fetch(`${BACKEND_URL}/api/monthsales`)
       .then((res) => res.json())

@@ -6,7 +6,9 @@ export default function DayAmountForm() {
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    fetch("https://billing-backend-mp2p.onrender.com/api/daysales")
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+
+    fetch(`${backendUrl}/api/daysales`)
       .then((res) => {
         if (!res.ok) throw new Error("Network response not ok");
         return res.json();
@@ -28,7 +30,6 @@ export default function DayAmountForm() {
   }, []);
 
   if (loading) return <div className="text-white">Loading...</div>;
-
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 p-4">
       <div className="bg-white w-full max-w-2xl rounded-xl p-6 text-black shadow-lg max-h-[90vh] overflow-auto">

@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
 import { FaTrash } from "react-icons/fa";
 import { Html5QrcodeScanner } from "html5-qrcode";
-import { useNavigate } from "react-router-dom"; // <-- add useNavigate import
+import { useNavigate } from "react-router-dom";
 import "./Manu.css";
 import { InvoiceContext } from "../invoice/InvoiceContext";
 
 const BillingPage = ({ invoiceOverride }) => {
-  const navigate = useNavigate(); // <-- initialize navigate
+  const navigate = useNavigate();
   const { invoiceData, setInvoiceData } = useContext(InvoiceContext);
   const [allProducts, setAllProducts] = useState([]);
   const [suggestions, setSuggestions] = useState({});
@@ -18,10 +18,10 @@ const BillingPage = ({ invoiceOverride }) => {
   const [changeMoney, setChangeMoney] = useState(invoiceOverride?.changeMoney || 0);
   const [customerName, setCustomerName] = useState(invoiceOverride?.customerName || "");
 
+  // Use env variable for backend URL or fallback to localhost
   const backendURL =
-    window.location.hostname === "localhost"
-      ? "http://localhost:5000"
-      : "https://billing-backend-mp2p.onrender.com";
+    import.meta.env.VITE_BACKEND_URL ||
+    (window.location.hostname === "localhost" ? "http://localhost:5000" : "");
 
   // Fetch shop from MongoDB
   useEffect(() => {
@@ -157,50 +157,51 @@ const BillingPage = ({ invoiceOverride }) => {
     alert("Invoice bill values reset.");
   };
 
-  // ===== NEW FUNCTION: Save invoice to backend and navigate to print page =====
+  // Save invoice to backend and navigate to print page
   const handleSaveAndPrint = async () => {
-  const items = invoiceData.items || [];
-  const total = items.reduce((acc, cur) => acc + (cur.amount || 0), 0);
-  const discounted = total - (total * (parseFloat(discount) || 0)) / 100;
-  const finalTotal = discounted + (discounted * (parseFloat(vat) || 0)) / 100;
+    const items = invoiceData.items || [];
+    const total = items.reduce((acc, cur) => acc + (cur.amount || 0), 0);
+    const discounted = total - (total * (parseFloat(discount) || 0)) / 100;
+    const finalTotal = discounted + (discounted * (parseFloat(vat) || 0)) / 100;
 
-  const productsPayload = items.map(item => ({
-    name: item.item || "Unnamed",
-    qty: Number(item.qty) || 1,
-    price: Number(item.rate) || 0,
-  }));
+    const productsPayload = items.map(item => ({
+      name: item.item || "Unnamed",
+      qty: Number(item.qty) || 1,
+      price: Number(item.rate) || 0,
+    }));
 
-  const payload = {
-    products: productsPayload,
-    totalAmount: finalTotal,
-    customerName: customerName,
-    shop: shop,
-    vat: vat,
-    discount: discount,
-    changeMoney: changeMoney,
-    date: new Date(),
+    const payload = {
+      products: productsPayload,
+      totalAmount: finalTotal,
+      customerName: customerName,
+      shop: shop,
+      vat: vat,
+      discount: discount,
+      changeMoney: changeMoney,
+      date: new Date(),
+    };
+
+    console.log("🔄 Sending payload to MongoDB:", payload);
+
+    try {
+      const response = await fetch(`${backendURL}/api/daysales`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) throw new Error("Failed to save day sale");
+
+      await response.json();
+
+      alert("✅ Sale saved successfully!");
+      navigate("/print");
+    } catch (error) {
+      console.error("❌ Save error:", error);
+      alert("Error saving sale: " + error.message);
+    }
   };
 
-  console.log("🔄 Sending payload to MongoDB:", payload); // ✅ Add debug
-
-  try {
-    const response = await fetch(`${backendURL}/api/daysales`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) throw new Error("Failed to save day sale");
-
-    await response.json();
-
-    alert("✅ Sale saved successfully!");
-    navigate("/print");
-  } catch (error) {
-    console.error("❌ Save error:", error);
-    alert("Error saving sale: " + error.message);
-  }
-};
 
   return (
     <div className="flex-1 flex justify-center items-start overflow-hidden print:p-5">

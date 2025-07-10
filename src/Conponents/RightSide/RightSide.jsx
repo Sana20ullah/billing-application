@@ -44,10 +44,9 @@ const RightSide = () => {
   const handlePrintAndSave = async () => {
     const total = invoiceData.items.reduce((acc, cur) => acc + cur.amount, 0);
 
+    // Use environment variable or localhost fallback
     const backendURL =
-      window.location.hostname === "localhost"
-        ? "http://localhost:5000"
-        : "https://billing-backend-mp2p.onrender.com"; // your Render backend
+      import.meta.env.VITE_BACKEND_URL || (window.location.hostname === "localhost" ? "http://localhost:5000" : "");
 
     try {
       await fetch(`${backendURL}/api/daysales`, {

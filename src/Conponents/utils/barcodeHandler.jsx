@@ -1,8 +1,9 @@
 export async function fetchProductByBarcode(barcode) {
   const backendURL =
-    window.location.hostname === "localhost"
+    import.meta.env.VITE_BACKEND_URL ||
+    (window.location.hostname === "localhost"
       ? "http://localhost:5000"
-      : "https://billing-backend-mp2p.onrender.com"; // ✅ Your deployed backend
+      : "");
 
   try {
     const res = await fetch(`${backendURL}/api/products/barcode/${barcode}`);
