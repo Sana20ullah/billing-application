@@ -1,8 +1,7 @@
 import react from '@vitejs/plugin-react';
-import tailwindcss from '@tailwindcss/vite';
 
 export default {
-  plugins: [react(), tailwindcss()],
+  plugins: [react()],
   build: {
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
