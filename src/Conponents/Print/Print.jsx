@@ -3,30 +3,37 @@ import { useNavigate } from "react-router-dom";
 import { InvoiceContext } from "../invoice/InvoiceContext";
 import BillingPage from "../Manu/BillingPage";
 
-
 const Print = () => {
-  const navigate = useNavigate();
   const { invoiceData, setInvoiceData } = useContext(InvoiceContext);
-
-  const formatInvoiceNumber = (num) => `INV-${String(num).padStart(4, "0")}`;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const current = parseInt(localStorage.getItem("invoiceNumber")) || 1;
-    const formatted = formatInvoiceNumber(current);
+    const formatted = `INV-${String(current).padStart(4, "0")}`;
 
-    setInvoiceData(prev => ({
-      ...prev,
-      invoiceNumber: formatted,
-    }));
-
-    const timeout = setTimeout(() => {
-      window.print();
+    if (!invoiceData.invoiceNumber) {
+      setInvoiceData((prev) => ({
+        ...prev,
+        invoiceNumber: formatted,
+      }));
       localStorage.setItem("invoiceNumber", current + 1);
-      navigate("/");
+    }
+
+    const printTimeout = setTimeout(() => {
+      window.print();
     }, 500);
 
-    return () => clearTimeout(timeout);
-  }, [setInvoiceData, navigate]);
+    const handleAfterPrint = () => {
+      navigate("/");
+    };
+
+    window.addEventListener("afterprint", handleAfterPrint);
+
+    return () => {
+      clearTimeout(printTimeout);
+      window.removeEventListener("afterprint", handleAfterPrint);
+    };
+  }, [invoiceData.invoiceNumber, setInvoiceData, navigate]);
 
   return (
     <div className="p-5">
@@ -34,6 +41,5 @@ const Print = () => {
     </div>
   );
 };
-
 
 export default Print;

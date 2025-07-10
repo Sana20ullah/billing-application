@@ -18,12 +18,10 @@ const BillingPage = ({ invoiceOverride }) => {
   const [changeMoney, setChangeMoney] = useState(invoiceOverride?.changeMoney || 0);
   const [customerName, setCustomerName] = useState(invoiceOverride?.customerName || "");
 
-  // Use env variable for backend URL or fallback to localhost
   const backendURL =
     import.meta.env.VITE_BACKEND_URL ||
     (window.location.hostname === "localhost" ? "http://localhost:5000" : "");
 
-  // Fetch shop from MongoDB
   useEffect(() => {
     if (!invoiceOverride) {
       fetch(`${backendURL}/api/shop`)
@@ -33,7 +31,14 @@ const BillingPage = ({ invoiceOverride }) => {
     }
   }, [backendURL, invoiceOverride]);
 
-  // Fetch all products
+  useEffect(() => {
+    const defaultInvoice = {
+      customerName: "",
+      items: [],
+    };
+    setInvoiceData(defaultInvoice);
+  }, [setInvoiceData]);
+
   useEffect(() => {
     fetch(`${backendURL}/api/products`)
       .then((res) => res.json())
@@ -41,7 +46,17 @@ const BillingPage = ({ invoiceOverride }) => {
       .catch((err) => console.error("Failed to load products", err));
   }, [backendURL]);
 
-  // Sync invoiceData from shop and state changes
+  useEffect(() => {
+    if (!invoiceOverride && !invoiceData.invoiceNumber) {
+      const current = parseInt(localStorage.getItem("invoiceNumber")) || 1;
+      const formatted = `INV-${String(current).padStart(4, "0")}`;
+      setInvoiceData((prev) => ({
+        ...prev,
+        invoiceNumber: formatted,
+      }));
+    }
+  }, [invoiceOverride, invoiceData.invoiceNumber, setInvoiceData]);
+
   useEffect(() => {
     if (!invoiceOverride && shop) {
       setInvoiceData((prev) => ({
@@ -150,20 +165,7 @@ const BillingPage = ({ invoiceOverride }) => {
     };
   }, [backendURL, setInvoiceData]);
 
-  const resetBillValues = () => {
-    setVat(0);
-    setDiscount(0);
-    setChangeMoney(0);
-    alert("Invoice bill values reset.");
-  };
-
-  // Save invoice to backend and navigate to print page
   const handleSaveAndPrint = async () => {
-    const items = invoiceData.items || [];
-    const total = items.reduce((acc, cur) => acc + (cur.amount || 0), 0);
-    const discounted = total - (total * (parseFloat(discount) || 0)) / 100;
-    const finalTotal = discounted + (discounted * (parseFloat(vat) || 0)) / 100;
-
     const productsPayload = items.map(item => ({
       name: item.item || "Unnamed",
       qty: Number(item.qty) || 1,
@@ -171,17 +173,16 @@ const BillingPage = ({ invoiceOverride }) => {
     }));
 
     const payload = {
+      invoiceNumber: invoiceData.invoiceNumber,
       products: productsPayload,
       totalAmount: finalTotal,
-      customerName: customerName,
-      shop: shop,
-      vat: vat,
-      discount: discount,
-      changeMoney: changeMoney,
+      customerName,
+      shop,
+      vat,
+      discount,
+      changeMoney,
       date: new Date(),
     };
-
-    console.log("🔄 Sending payload to MongoDB:", payload);
 
     try {
       const response = await fetch(`${backendURL}/api/daysales`, {
@@ -193,7 +194,6 @@ const BillingPage = ({ invoiceOverride }) => {
       if (!response.ok) throw new Error("Failed to save day sale");
 
       await response.json();
-
       alert("✅ Sale saved successfully!");
       navigate("/print");
     } catch (error) {
@@ -201,7 +201,6 @@ const BillingPage = ({ invoiceOverride }) => {
       alert("Error saving sale: " + error.message);
     }
   };
-
 
   return (
     <div className="flex-1 flex justify-center items-start overflow-hidden print:p-5">
@@ -213,7 +212,9 @@ const BillingPage = ({ invoiceOverride }) => {
             <p className="font-semibold">{shop?.name || "Loading Shop..."}</p>
             <p>Address : {shop?.address || "-"}</p>
             <p>Phone : {shop?.phone || "-"}</p>
-            <p>Invoice #: {invoiceOverride?.invoiceNumber || "INV-0001"}</p>
+            <p>Invoice #: {invoiceOverride?.invoiceNumber || invoiceData.invoiceNumber || "INV-XXXX"}</p>
+
+
             <p>Date: {new Date().toLocaleString()}</p>
             <p className="flex items-center gap-2">
               Bill To:
