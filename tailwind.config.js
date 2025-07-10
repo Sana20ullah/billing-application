@@ -1,7 +1,14 @@
-export default {
-  content: ['./index.html', './src/**/*.{js,jsx,ts,tsx}'],
-  theme: {
-    extend: {},
+build: {
+  chunkSizeWarningLimit: 1000,
+  rollupOptions: {
+    output: {
+      manualChunks(id) {
+        if (id.includes('node_modules')) {
+          if (id.includes('react')) return 'vendor-react';
+          if (id.includes('mathjs')) return 'vendor-mathjs';
+          return 'vendor';
+        }
+      },
+    },
   },
-  plugins: [],
-};
+}

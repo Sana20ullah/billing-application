@@ -1,24 +1,25 @@
-import tailwindcss from '@tailwindcss/vite';
+import react from '@vitejs/plugin-react';
 
 export default {
   server: {
     host: '0.0.0.0',
     port: 5173,
     strictPort: true,
-    cors: {
-      origin: [
-        'https://billing-backend-mp2p.onrender.com',
-        'https://billing-application-5.onrender.com',
-        'http://localhost:5173'  // local dev URL
-      ],
-      methods: ['GET', 'POST', 'PUT', 'DELETE'],  // specify allowed methods if needed
-      credentials: true
-    },
-    allowedHosts: [
-      '2721-46-143-183-105.ngrok-free.app',
-      'billing-application-5.onrender.com',
-      'billing-backend-mp2p.onrender.com'
-    ],
   },
-  plugins: [tailwindcss()],
+  plugins: [react()],
+  build: {
+    outDir: 'dist',
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('react')) return 'vendor-react';
+            if (id.includes('mathjs')) return 'vendor-mathjs';
+            return 'vendor';
+          }
+        },
+      },
+    },
+  },
 };
