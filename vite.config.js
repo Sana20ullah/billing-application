@@ -1,14 +1,9 @@
 import react from '@vitejs/plugin-react';
+import tailwindcss from '@tailwindcss/vite';
 
 export default {
-  server: {
-    host: '0.0.0.0',
-    port: 5173,
-    strictPort: true,
-  },
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   build: {
-    outDir: 'dist',
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
       output: {
