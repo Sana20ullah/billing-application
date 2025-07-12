@@ -66,3 +66,70 @@
 
 }
 
+@media (max-width: 768px){
+
+    .grid-cols-header {
+  display: grid;
+  grid-template-columns: 30px 1fr 35px 50px 80px 20px;
+  font-weight: 600; /* equivalent to font-semibold */
+  border-bottom: 1px dotted #9ca3af; /* Tailwind's gray-400 */
+  padding-bottom: 0.5rem; /* pb-2 */
+  margin-bottom: 0.5rem; /* mb-2 */
+  gap: 0.5rem; /* gap-2 */
+}
+.abcd1{
+  margin-left: -2.5rem;
+}
+.abcd2{
+  margin-left: 2rem;
+}
+.abcd3{
+  margin-left: 0.5rem;
+}
+.abcd4{
+  margin-left: 2.5rem;
+}
+.abcd5{
+  margin-left: -3.3rem;
+}
+.barcode-mobile{
+  margin-left: 8rem;
+}
+.icon-reset{
+  display: none;
+}
+.share-frame{
+  border: none;
+  width: 13rem;
+  height: 6rem;
+  
+  
+}
+.share-frame1{
+  border: none;
+  width: 13rem;
+  
+ 
+}
+.share-frame2{
+  margin-left: -11rem;
+  width: 13rem;
+   height: 9rem;
+   
+}
+.share-frame3{
+  margin-left: -11rem;
+  width: 13rem;
+   
+   
+}
+.share-button{
+  margin-left: 2.8rem;
+  height: 4rem;
+  font-size: 2rem;
+  gap: 2rem;
+
+}
+
+}
+

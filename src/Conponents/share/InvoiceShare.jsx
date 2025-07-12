@@ -34,14 +34,14 @@ const socialMedia = [
 
 
   return (
-<div className="flex justify-center mt-2 m-6 gap-3  border border-yellow-400 p-4 ">
+<div className="share-frame flex justify-center mt-2 m-6 gap-3  border border-yellow-400 p-4 ">
 
       {!shareType && (
-        <div className="flex justify-center gap-8 mb-0 p-5 border border-yellow-400 rounded-xl">
+        <div className="share-frame flex justify-center gap-8 mb-0 p-5 border border-yellow-400 rounded-xl">
           <button
             aria-label="Share as Image"
             onClick={() => setShareType("img")}
-            className="bg-blue-600 p-3  rounded-full hover:bg-blue-700 transition"
+            className="share-frame1 bg-blue-600 p-3  rounded-full hover:bg-blue-700 transition"
           >
             {/* You can put a relevant icon here if you want */}
             IMG
@@ -60,12 +60,12 @@ const socialMedia = [
 
       {shareType && (
         <>
-          <div className="flex justify-between h-8 items-center mb-5 -w-12 p-5 ">
+          <div className="share-frame2 flex justify-between h-8 items-center mb-5 -w-12 p-5 ">
 
             <button
               aria-label="Back"
               onClick={() => setShareType(null)}
-              className="p-2 -ml-20 mt-13 text-yellow-400 rounded-full hover:bg-gray-700 transition"
+              className=" p-2 -ml-20 mt-13 text-yellow-400 rounded-full hover:bg-gray-700 transition"
             >
               <FaArrowLeft size={20} />
             </button>

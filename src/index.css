@@ -14,6 +14,7 @@
 /* styles.css */
 @media print {
  
+ 
   .print-only,
   .print-only * {
     visibility: visible !important;
@@ -51,3 +52,58 @@ input:-webkit-autofill:active {
   -webkit-text-fill-color: #facc15 !important; /* Tailwind yellow-400 */
   transition: background-color 5000s ease-in-out 0s;
 }
+
+
+@media (max-width: 768px) {
+  .mobile-full-btn {
+    
+    display: block !important;
+    margin: 0px auto !important;
+    position: static !important;
+  }
+
+  .mobile-scroll-wrapper {
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    height: 100vh;
+    padding-bottom: 10px;
+  }
+  .width-left-page{
+    width: 28rem;
+    height: 50rem;
+    margin-top: 0rem;
+    margin-left: -0.8rem;
+  }
+  .width-right-page{
+    width: 29rem;
+    height: 40rem;
+    margin-top: 49.5rem;
+    margin-left: -28rem;
+    border: none;
+  }
+  button{
+    width: 20rem;
+    align-items: center;
+    margin-left: -1rem;
+    
+   
+  }
+  .print-icon-size{
+    margin-top: 1rem ;
+    display: none;
+    
+    
+  }
+  .print-button-size{
+    height: 5rem;
+    
+    
+   
+  }
+  .print-text-size{
+    font-size: 2rem;
+    margin-top:-1rem ;
+  }
+}
+

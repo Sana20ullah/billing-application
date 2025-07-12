@@ -1,5 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { InvoiceContext } from "../invoice/InvoiceContext";
+import BillingPage from "../Manu/BillingPage";
+
 import {
   FaEye,
   FaUserShield,
@@ -17,6 +19,8 @@ const RightSide = () => {
 
   const [showShare, setShowShare] = useState(false);
   const [showBarcodeForm, setShowBarcodeForm] = useState(false);
+  const [showInvoicePopup, setShowInvoicePopup] = useState(false);
+
   const [barcodeForm, setBarcodeForm] = useState({
     link: "",
     phone: "",
@@ -69,12 +73,12 @@ const RightSide = () => {
     "w-6 h-6 text-purple-500 group-hover:text-white transition-colors duration-300";
 
   return (
-    <div className="w-64 h-160 bg-black text-white p-4 flex flex-col gap-4 shadow-lg relative">
+    <div className=" width-right-page mobile-scroll-wrapper  w-64  h-160 bg-black text-white p-4 flex flex-col gap-4 shadow-lg relative sm:-mt-2  ">
 
       {/* Preview Button */}
-      <button
+      <button 
         onClick={handlePreview}
-        className="relative px-8 py-3 mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
+        className="mobile-full-btn relative px-8 py-3 mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
       >
         <FaEye className={iconClasses} />
         <span className="bg-gradient-to-r from-teal-400 via-emerald-500 to-lime-500 bg-clip-text text-transparent font-semibold text-lg">
@@ -87,7 +91,7 @@ const RightSide = () => {
       {/* Admin Button */}
       <button
         onClick={handleAdminClick}
-        className="relative px-8 py-3 mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
+        className="mobile-full-btn relative px-8 py-3 mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
       >
         <FaUserShield className={iconClasses} />
         <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent font-bold text-lg">
@@ -100,7 +104,7 @@ const RightSide = () => {
       {/* Add QR Code Button */}
       <button
         onClick={() => setShowBarcodeForm(true)}
-        className="relative px-8 py-3 mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
+        className="mobile-full-btn relative px-8 py-3 mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
       >
         <FaQrcode className={iconClasses} />
         <span className="bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 bg-clip-text text-transparent font-semibold text-lg">
@@ -113,7 +117,7 @@ const RightSide = () => {
       {/* Share Button */}
       <button
         onClick={() => setShowShare((prev) => !prev)}
-        className="relative px-8 py-3  mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
+        className="share-button relative px-8 py-3  mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
       >
         <FaShareAlt className={`ml-9 ${iconClasses}`} />
 
@@ -178,16 +182,27 @@ const RightSide = () => {
         </>
       )}
 
+      {/* Invoice Button for Mobile Only */}
+<div className="sm:hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
+  <button
+    onClick={() => setShowInvoicePopup(true)}
+    className="px-6 py-3 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-700 transition"
+  >
+    Invoice
+  </button>
+</div>
+
+
       {/* Print and Reset Buttons stacked vertically */}
       <div className="flex flex-col gap-4 mt-3">
 
         {/* Print Button */}
         <button
           onClick={handlePrintAndSave}
-          className="relative w-[225px] h-[50px] bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
+          className=" print-button-size mobile-full-btn relative w-[225px] h-[50px] bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
         >
-          <FaPrint className="w-10 ml-15 h-6 text-purple-500 group-hover:text-white transition-colors duration-300" />
-          <span className="bg-gradient-to-r text-22 from-orange-400 via-red-500 to-pink-500 bg-clip-text text-transparent font-semibold">
+          <FaPrint className=" print-icon-size w-10 ml-15 h-6 text-purple-500 group-hover:text-white transition-colors duration-300 " />
+          <span className=" print-text-size bg-gradient-to-r text-22 from-orange-400 via-red-500 to-pink-500 bg-clip-text text-transparent font-semibold ">
             Print
           </span>
 
@@ -197,7 +212,7 @@ const RightSide = () => {
         {/* Reset Button */}
         <button
           onClick={handleReset}
-          className="relative w-32 mt-17 h-12 text-[14px] font-bold text-white ml-15
+          className=" mobile-full-btn relative w-32 mt-17 h-12 text-[14px] font-bold text-white ml-15
             bg-gradient-to-r from-red-500 via-pink-600 to-red-700
             rounded-lg shadow-lg transition-all duration-300
             hover:from-red-600 hover:via-pink-700 hover:to-red-800
@@ -212,11 +227,32 @@ const RightSide = () => {
               shadow-[0_0_15px_5px_rgba(255,105,135,0.8)]
               clip-path-[polygon(30%_0%,70%_0%,100%_30%,100%_70%,70%_100%,30%_100%,0%_70%,0%_30%)]"
           ></div>
-          <span className="absolute right-1 top-1 w-5 h-5 border-l-4 border-t-4 border-pink-400 rotate-45"></span>
-          <span className="absolute left-1 bottom-1 w-5 h-5 border-r-4 border-b-4 border-pink-400 -rotate-45"></span>
+          <span className="icon-reset absolute right-1 top-1 w-5 h-5 border-l-4 border-t-4 border-pink-400 rotate-45"></span>
+          <span className="icon-reset absolute left-1 bottom-1 w-5 h-5 border-r-4 border-b-4 border-pink-400 -rotate-45"></span>
         </button>
 
       </div>
+      
+      {/* Fullscreen BillingPage Popup */}
+{showInvoicePopup && (
+  <>
+    <div
+      onClick={() => setShowInvoicePopup(false)}
+      className="fixed inset-0 bg-black bg-opacity-60 z-40"
+    />
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-white">
+      <div className="flex justify-end p-4">
+        <button
+          onClick={() => setShowInvoicePopup(false)}
+          className="text-black text-xl font-bold"
+        >
+          ✕
+        </button>
+      </div>
+      <BillingPage />
+    </div>
+  </>
+)}
 
       {/* Floating share modal and overlay */}
       {showShare && (
@@ -252,6 +288,8 @@ const RightSide = () => {
           </div>
         </>
       )}
+
+
     </div>
   );
 };

@@ -207,7 +207,7 @@ useEffect(() => {
 
   return (
     <div className="flex-1 flex justify-center items-start overflow-hidden print:p-5">
-      <div className="print-area w-[700px] print:w-[300px] max-h-[95vh] print:max-h-full print:h-auto overflow-y-auto print:overflow-visible overflow-x-hidden print:overflow-x-hidden bg-white p-5 rounded shadow-md text-gray-800 print:break-words">
+      <div className="print-area w-[900px] print:w-[300px] max-h-[100vh] print:max-h-full print:h-auto overflow-y-auto print:overflow-visible overflow-x-hidden print:overflow-x-hidden bg-white p-5 rounded shadow-md text-gray-800 print:break-words">
         <h1 className="text-3xl mb-5 font-bold text-center mb-0">INVOICE</h1>
 
         <div className="flex justify-between items-start mb-6">
@@ -243,7 +243,7 @@ useEffect(() => {
           <div className="remove-header print-hidden">Trash</div>
         </div>
 
-        <div className="max-h-64 overflow-y-auto custom-scroll pr-2 print:-mt-10">
+        <div className=" max-h-64 overflow-y-auto custom-scroll pr-2 print:-mt-10">
           {items.map((item, index) => (
             <div
               key={index}
@@ -254,7 +254,7 @@ useEffect(() => {
                 <input
                   type="text"
                   placeholder="Item name"
-                  className="px-2 py-1 -ml-10 w-52 border-b border-gray-400 outline-none bg-transparent print:border-none print:-ml-3"
+                  className="abcd1 px-2 py-1 -ml-10 w-52 border-b border-gray-400 outline-none bg-transparent print:border-none print:-ml-3"
                   value={item.item}
                   onChange={(e) => updateItem(index, "item", e.target.value)}
                 />
@@ -276,26 +276,26 @@ useEffect(() => {
 
               <input
                 type="number"
-                className="px-2 py-1 ml-22 w-14 border-b border-gray-400 outline-none bg-transparent print:border-none print:ml-7"
+                className="abcd2 px-2 py-1 ml-22 w-14 border-b border-gray-400 outline-none bg-transparent print:border-none print:ml-7"
                 value={item.qty}
                 onChange={(e) => updateItem(index, "qty", e.target.value)}
                 min={0}
               />
               <input
                 type="number"
-                className="px-2 py-1 ml-16 w-22 border-b border-gray-400 outline-none bg-transparent print:border-none print:ml-4"
+                className="abcd3 px-2 py-1 ml-16 w-22 border-b border-gray-400 outline-none bg-transparent print:border-none print:ml-4"
                 placeholder="0"
                 value={item.rate === 0 ? "" : item.rate}
                 onChange={(e) => updateItem(index, "rate", e.target.value)}
                 min={0}
                 step="0.01"
               />
-              <div className="text-right pr-2 ml-10 w-25 print:-ml-5">
+              <div className="abcd5 text-right pr-2 ml-10 w-25 print:-ml-5">
                 {(item.amount || 0).toFixed(2)}
               </div>
               {!invoiceOverride && (
                 <button
-                  className="text-red-600 hover:text-red-800 ml-18 print:hidden"
+                  className="abcd4 text-red-600 hover:text-red-800 ml-18 print:hidden"
                   onClick={() => removeItem(index)}
                 >
                   <FaTrash />
@@ -388,7 +388,7 @@ useEffect(() => {
           Come again soon! Have a great day!
         </p>
 
-        <div className="w-24 h-24 ml-70 mt-8 print:ml-25">
+        <div className="barcode-mobile w-24 h-24 ml-70 mt-8 print:ml-25">
           <img
             src={`https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
               invoiceData.barcodeValue || "No Data"

@@ -139,16 +139,18 @@ const LeftSide = ({ role, onShopDetailsChange }) => {
   };
 
   const buttonBaseClasses =
-    "relative px-8 py-3 mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] flex items-center gap-2";
+    "mobile-full-btn relative px-8 py-3 mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] flex items-center gap-2";
 
   return (
-    <div>
-      <div className="w-64 h-160 bg-black text-white p-4 flex flex-col gap-4 shadow-2xl ">
+    <div className=" ">
+     <div className="width-left-page mobile-scroll-wrapper  w-64 h-[40rem] bg-black text-white p-4 flex flex-col gap-4 shadow-2xl  sm:ml-4 mt-0 ">
+
+
         {showProductsList && <ProductsList onClose={() => setShowProductsList(false)} />}
 
         <button 
           onClick={() => setShowProductsList(true)}
-          className={`absolute top-0 left-1 ${buttonBaseClasses}`}
+          className={` absolute top--1 left-1 ${buttonBaseClasses}`}
         >
           <FaBars className="mr-2" />
           <span className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 bg-clip-text text-transparent font-bold text-xl">
@@ -157,31 +159,20 @@ const LeftSide = ({ role, onShopDetailsChange }) => {
         </button>
 
          {/* Admin-only: Add Item */}
-        {role === "admin" ? (
+       
           <button
             onClick={toggleItemForm}
-            className={`absolute -top-5 left-1 ${buttonBaseClasses}`}
+            className={`absolute -top-7 left-1 ${buttonBaseClasses}`}
           >
             <FaPlus />
             <span className="bg-gradient-to-r from-green-400 via-lime-400 to-yellow-400 bg-clip-text text-transparent font-semibold text-lg">
               Items Add
             </span>
           </button>
-        ) : (
-          <button
-            onClick={() => alert("Only admin can add items.")}
-            className={`absolute -top-5 left-1 ${buttonBaseClasses}`}
-          >
-            <FaPlus />
-            <span className="bg-gradient-to-r from-green-400 via-lime-400 to-yellow-400 bg-clip-text text-transparent font-semibold text-lg">
-              Items Add
-            </span>
-          </button>
-        )}
-
+        
         <button
           onClick={toggleCalculator}
-          className={`absolute -top-10 left-1 ${buttonBaseClasses} ${showCalculator ? "bg-purple-700" : ""}`}
+          className={`absolute -top-14 left-1 ${buttonBaseClasses} ${showCalculator ? "bg-purple-700" : ""}`}
         >
           <FaCalculator />
           <span className="bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 bg-clip-text text-transparent font-bold text-lg">
@@ -191,7 +182,7 @@ const LeftSide = ({ role, onShopDetailsChange }) => {
 
         <button
           onClick={() => setShowDayForm(true)}
-          className={`absolute -top-15 -right-1 ${buttonBaseClasses}`}
+          className={`absolute -top-21 -right-1 ${buttonBaseClasses}`}
         >
           <FaCalendarDay />
           <span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent font-semibold text-lg">
@@ -203,7 +194,7 @@ const LeftSide = ({ role, onShopDetailsChange }) => {
 
         <button
           onClick={() => setShowMonthForm(true)}
-          className={`absolute bottom-20 -right-1 ${buttonBaseClasses}`}
+          className={`absolute bottom-28 -right-1 ${buttonBaseClasses}`}
         >
           <FaCalendarAlt />
           <span className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text text-transparent font-semibold text-lg">
@@ -216,57 +207,38 @@ const LeftSide = ({ role, onShopDetailsChange }) => {
 
 
        {/* Admin-only: Shop Info Edit */}
-        {role === "admin" ? (
-          <button
-            onClick={toggleShopForm}
-            className={`absolute -top-25 left-0 ${buttonBaseClasses}`}
-          >
-            <FaPercentage />
-            <span className="bg-gradient-to-r from-green-400 via-teal-500 to-cyan-500 bg-clip-text text-transparent font-semibold text-lg">
-              Edit Shop Info
-            </span>
-          </button>
-        ) : (
+        
+       
+        
           <button
             onClick={() => alert("Only admin can edit shop info.")}
-            className={`absolute -top-25 left-0 ${buttonBaseClasses}`}
+            className={`absolute -top-35 left-0 ${buttonBaseClasses}`}
           >
             <FaPercentage />
             <span className="bg-gradient-to-r from-green-400 via-teal-500 to-cyan-500 bg-clip-text text-transparent font-semibold text-lg">
               Edit Shop Info
             </span>
           </button>
-        )}
+      
 
       
         {/* Admin-only: Sales Return */}
-        {role === "admin" ? (
+        
           <button
             onClick={() => setShowReturnForm(true)}
-            className={`absolute -top-30 -left0 ${buttonBaseClasses}`}
+            className={`absolute -top-42 -left0 ${buttonBaseClasses}`}
           >
             <FaUsers />
             <span className="bg-gradient-to-r from-rose-500 via-red-500 to-orange-500 bg-clip-text text-transparent font-bold text-lg">
               Sales Return
             </span>
           </button>
-        ) : (
-          <button
-            onClick={() => alert("Only admin can access sales return.")}
-            className={`absolute -top-30 -left0 ${buttonBaseClasses}`}
-          >
-            <FaUsers />
-            <span className="bg-gradient-to-r from-rose-500 via-red-500 to-orange-500 bg-clip-text text-transparent font-bold text-lg">
-              Sales Return
-            </span>
-          </button>
-        )}
 
         {showReturnForm && <ReturnSaleForm onClose={() => setShowReturnForm(false)} />}
 
         <button
           onClick={() => navigate("/document")}
-          className={`absolute -top-35 left-0 ${buttonBaseClasses}`}
+          className={`absolute -top-49 left-0 ${buttonBaseClasses}`}
         >
           📄
           <span className="bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500 bg-clip-text text-transparent font-semibold text-lg">
@@ -276,7 +248,7 @@ const LeftSide = ({ role, onShopDetailsChange }) => {
 
         <button
           onClick={toggleBarcodePopup}
-          className={`absolute -top-40 left-0 ${buttonBaseClasses}`}
+          className={`absolute -top-56 left-0 ${buttonBaseClasses}`}
         >
           <FaFilePdf />
           <span className="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent font-bold text-lg">
