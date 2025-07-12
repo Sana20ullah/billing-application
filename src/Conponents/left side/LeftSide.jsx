@@ -19,7 +19,7 @@ import ReturnSaleForm from "../ReturnSaleForm/ReturnSaleForm";
 import MonthAmountForm from "../MonthAmountForm/MonthAmountForm";
 import { useNavigate } from "react-router-dom";
 
-const LeftSide = ({ onShopDetailsChange }) => {
+const LeftSide = ({ role, onShopDetailsChange }) => {
   const { addProductToInvoice } = useContext(InvoiceContext);
   const [showProductsList, setShowProductsList] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
@@ -43,7 +43,9 @@ const LeftSide = ({ onShopDetailsChange }) => {
   // Use environment variable for backend URL; fallback to localhost for dev
   const backendURL = import.meta.env.VITE_BACKEND_URL || (window.location.hostname === "localhost" ? "http://localhost:5000" : "");
 
-  const navigate = useNavigate();
+
+
+
 
   useEffect(() => {
     // Load shop info from MongoDB only once
@@ -154,15 +156,28 @@ const LeftSide = ({ onShopDetailsChange }) => {
           </span>
         </button>
 
-        <button
-          onClick={toggleItemForm}
-          className={`absolute -top-5 left-1 ${buttonBaseClasses}`}
-        >
-          <FaPlus />
-          <span className="bg-gradient-to-r from-green-400 via-lime-400 to-yellow-400 bg-clip-text text-transparent font-semibold text-lg">
-            Items Add
-          </span>
-        </button>
+         {/* Admin-only: Add Item */}
+        {role === "admin" ? (
+          <button
+            onClick={toggleItemForm}
+            className={`absolute -top-5 left-1 ${buttonBaseClasses}`}
+          >
+            <FaPlus />
+            <span className="bg-gradient-to-r from-green-400 via-lime-400 to-yellow-400 bg-clip-text text-transparent font-semibold text-lg">
+              Items Add
+            </span>
+          </button>
+        ) : (
+          <button
+            onClick={() => alert("Only admin can add items.")}
+            className={`absolute -top-5 left-1 ${buttonBaseClasses}`}
+          >
+            <FaPlus />
+            <span className="bg-gradient-to-r from-green-400 via-lime-400 to-yellow-400 bg-clip-text text-transparent font-semibold text-lg">
+              Items Add
+            </span>
+          </button>
+        )}
 
         <button
           onClick={toggleCalculator}
@@ -199,25 +214,53 @@ const LeftSide = ({ onShopDetailsChange }) => {
           <MonthAmountForm onClose={() => setShowMonthForm(false)} />
         )}
 
-        <button
-          onClick={toggleShopForm}
-          className={`absolute -top-25 left-0 ${buttonBaseClasses}`}
-        >
-          <FaPercentage />
-          <span className="bg-gradient-to-r from-green-400 via-teal-500 to-cyan-500 bg-clip-text text-transparent font-semibold text-lg">
-            Edit Shop Info
-          </span>
-        </button>
 
-        <button
-          onClick={() => setShowReturnForm(true)}
-          className={`absolute -top-30 -left0 ${buttonBaseClasses}`}
-        >
-          <FaUsers />
-          <span className="bg-gradient-to-r from-rose-500 via-red-500 to-orange-500 bg-clip-text text-transparent font-bold text-lg">
-            Sales Return
-          </span>
-        </button>
+       {/* Admin-only: Shop Info Edit */}
+        {role === "admin" ? (
+          <button
+            onClick={toggleShopForm}
+            className={`absolute -top-25 left-0 ${buttonBaseClasses}`}
+          >
+            <FaPercentage />
+            <span className="bg-gradient-to-r from-green-400 via-teal-500 to-cyan-500 bg-clip-text text-transparent font-semibold text-lg">
+              Edit Shop Info
+            </span>
+          </button>
+        ) : (
+          <button
+            onClick={() => alert("Only admin can edit shop info.")}
+            className={`absolute -top-25 left-0 ${buttonBaseClasses}`}
+          >
+            <FaPercentage />
+            <span className="bg-gradient-to-r from-green-400 via-teal-500 to-cyan-500 bg-clip-text text-transparent font-semibold text-lg">
+              Edit Shop Info
+            </span>
+          </button>
+        )}
+
+      
+        {/* Admin-only: Sales Return */}
+        {role === "admin" ? (
+          <button
+            onClick={() => setShowReturnForm(true)}
+            className={`absolute -top-30 -left0 ${buttonBaseClasses}`}
+          >
+            <FaUsers />
+            <span className="bg-gradient-to-r from-rose-500 via-red-500 to-orange-500 bg-clip-text text-transparent font-bold text-lg">
+              Sales Return
+            </span>
+          </button>
+        ) : (
+          <button
+            onClick={() => alert("Only admin can access sales return.")}
+            className={`absolute -top-30 -left0 ${buttonBaseClasses}`}
+          >
+            <FaUsers />
+            <span className="bg-gradient-to-r from-rose-500 via-red-500 to-orange-500 bg-clip-text text-transparent font-bold text-lg">
+              Sales Return
+            </span>
+          </button>
+        )}
 
         {showReturnForm && <ReturnSaleForm onClose={() => setShowReturnForm(false)} />}
 

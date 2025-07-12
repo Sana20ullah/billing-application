@@ -1,25 +1,25 @@
 import React, { useState, useEffect, useContext } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 
-import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import Header from './Conponents/header/Header';
 import LeftSide from './Conponents/left side/LeftSide';
 import RightSide from './Conponents/RightSide/RightSide';
 import BillingPage from "./Conponents/Manu/BillingPage";
 import Print from "./Conponents/Print/Print";
 import Calculator from "./Conponents/Calculator/Calculator";
-import ShopNameForm from "./Conponents/shopnameChange/ShopNameForm"; // Make sure path is correct
+import ShopNameForm from "./Conponents/shopnameChange/ShopNameForm";
 import DocumentPage from './Conponents/DocumentPage/DocumentPage';
 
-import { InvoiceContext } from "./Conponents/invoice/InvoiceContext"; // Adjust path as needed
+import { InvoiceContext } from "./Conponents/invoice/InvoiceContext";
 
-function App() {
+function App({ onLogout, userRole }) {
   const { setInvoiceData } = useContext(InvoiceContext);
-
   const [shopDetails, setShopDetails] = useState({
     name: "",
     address: "",
     phone: "",
   });
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ function App() {
       .then((data) => {
         if (data) {
           setShopDetails(data);
-          setInvoiceData(prev => ({ ...prev, shop: data }));  // <--- NEW LINE HERE (keep)
+          setInvoiceData((prev) => ({ ...prev, shop: data }));
         }
         setLoading(false);
       })
@@ -40,7 +40,6 @@ function App() {
 
   return (
     <>
-      {/* KEEP: All route handling */}
       <Routes>
         <Route
           path="/"
@@ -48,7 +47,7 @@ function App() {
             <div className="flex">
               <LeftSide onShopDetailsChange={setShopDetails} />
               <div className="flex-1 flex flex-col min-h-screen bg-gray-100 overflow-y-auto">
-                <Header />
+                <Header onLogout={onLogout} />
                 <div className="flex justify-center p-4">
                   <BillingPage shopDetails={shopDetails} />
                 </div>
@@ -57,6 +56,8 @@ function App() {
             </div>
           }
         />
+
+        <Route path="/print" element={<Print shopDetails={shopDetails} />} />
 
         <Route
           path="/edit-shop"
@@ -70,12 +71,14 @@ function App() {
             </div>
           }
         />
-        <Route path="/print" element={<Print shopDetails={shopDetails} />} />
+
         <Route path="/calculator" element={<Calculator />} />
         <Route path="/document" element={<DocumentPage />} />
+
+        {/* Redirect all unknown routes to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
-      {/* ✅ GET: Added once to make glowing buttons work globally */}
       <SvgFilters />
     </>
   );
@@ -83,38 +86,35 @@ function App() {
 
 export default App;
 
-/* ✅ KEEP: Reusable SVG filter component for glowing buttons */
+// SVG Filters component unchanged...
+
+
+// SVG Filters unchanged
 function SvgFilters() {
   return (
     <svg style={{ position: "absolute", width: 0, height: 0 }}>
       <filter id="unopaq" y="-100%" height="300%" x="-100%" width="300%">
         <feColorMatrix
-          values="
-            1 0 0 0 0 
-            0 1 0 0 0 
-            0 0 1 0 0 
-            0 0 0 9 0
-          "
+          values="1 0 0 0 0 
+                  0 1 0 0 0 
+                  0 0 1 0 0 
+                  0 0 0 9 0"
         />
       </filter>
       <filter id="unopaq2" y="-100%" height="300%" x="-100%" width="300%">
         <feColorMatrix
-          values="
-            1 0 0 0 0 
-            0 1 0 0 0 
-            0 0 1 0 0 
-            0 0 0 3 0
-          "
+          values="1 0 0 0 0 
+                  0 1 0 0 0 
+                  0 0 1 0 0 
+                  0 0 0 3 0"
         />
       </filter>
       <filter id="unopaq3" y="-100%" height="300%" x="-100%" width="300%">
         <feColorMatrix
-          values="
-            1 0 0 0.2 0 
-            0 1 0 0.2 0 
-            0 0 1 0.2 0 
-            0 0 0 2 0
-          "
+          values="1 0 0 0.2 0 
+                  0 1 0 0.2 0 
+                  0 0 1 0.2 0 
+                  0 0 0 2 0"
         />
       </filter>
     </svg>
