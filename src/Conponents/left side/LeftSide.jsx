@@ -150,7 +150,7 @@ const LeftSide = ({ role, onShopDetailsChange }) => {
 
         <button 
           onClick={() => setShowProductsList(true)}
-          className={` absolute top--1 left-1 ${buttonBaseClasses}`}
+          className={` bt1 absolute top--1 left-1 ${buttonBaseClasses}`}
         >
           <FaBars className="mr-2" />
           <span className="bg-gradient-to-r from-purple-600 via-pink-500 to-red-500 bg-clip-text text-transparent font-bold text-xl">
@@ -162,7 +162,7 @@ const LeftSide = ({ role, onShopDetailsChange }) => {
        
           <button
             onClick={toggleItemForm}
-            className={`absolute -top-7 left-1 ${buttonBaseClasses}`}
+            className={`bt1 absolute -top-7 left-1 ${buttonBaseClasses}`}
           >
             <FaPlus />
             <span className="bg-gradient-to-r from-green-400 via-lime-400 to-yellow-400 bg-clip-text text-transparent font-semibold text-lg">
@@ -172,7 +172,7 @@ const LeftSide = ({ role, onShopDetailsChange }) => {
         
         <button
           onClick={toggleCalculator}
-          className={`absolute -top-14 left-1 ${buttonBaseClasses} ${showCalculator ? "bg-purple-700" : ""}`}
+          className={`bt1 absolute -top-14 left-1 ${buttonBaseClasses} ${showCalculator ? "bg-purple-700" : ""}`}
         >
           <FaCalculator />
           <span className="bg-gradient-to-r from-indigo-500 via-purple-600 to-pink-500 bg-clip-text text-transparent font-bold text-lg">
@@ -182,7 +182,7 @@ const LeftSide = ({ role, onShopDetailsChange }) => {
 
         <button
           onClick={() => setShowDayForm(true)}
-          className={`absolute -top-21 -right-1 ${buttonBaseClasses}`}
+          className={`bt1 absolute -top-21 -right-1 ${buttonBaseClasses}`}
         >
           <FaCalendarDay />
           <span className="bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 bg-clip-text text-transparent font-semibold text-lg">
@@ -194,7 +194,7 @@ const LeftSide = ({ role, onShopDetailsChange }) => {
 
         <button
           onClick={() => setShowMonthForm(true)}
-          className={`absolute bottom-28 -right-1 ${buttonBaseClasses}`}
+          className={`bt1 absolute bottom-28 -right-1 ${buttonBaseClasses}`}
         >
           <FaCalendarAlt />
           <span className="bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 bg-clip-text text-transparent font-semibold text-lg">
@@ -212,7 +212,7 @@ const LeftSide = ({ role, onShopDetailsChange }) => {
         
           <button
             onClick={() => alert("Only admin can edit shop info.")}
-            className={`absolute -top-35 left-0 ${buttonBaseClasses}`}
+            className={`bt1 absolute -top-35 left-0 ${buttonBaseClasses}`}
           >
             <FaPercentage />
             <span className="bg-gradient-to-r from-green-400 via-teal-500 to-cyan-500 bg-clip-text text-transparent font-semibold text-lg">
@@ -226,7 +226,7 @@ const LeftSide = ({ role, onShopDetailsChange }) => {
         
           <button
             onClick={() => setShowReturnForm(true)}
-            className={`absolute -top-42 -left0 ${buttonBaseClasses}`}
+            className={`bt1 absolute -top-42 -left0 ${buttonBaseClasses}`}
           >
             <FaUsers />
             <span className="bg-gradient-to-r from-rose-500 via-red-500 to-orange-500 bg-clip-text text-transparent font-bold text-lg">
@@ -238,7 +238,7 @@ const LeftSide = ({ role, onShopDetailsChange }) => {
 
         <button
           onClick={() => navigate("/document")}
-          className={`absolute -top-49 left-0 ${buttonBaseClasses}`}
+          className={`bt1 absolute -top-49 left-0 ${buttonBaseClasses}`}
         >
           📄
           <span className="bg-gradient-to-r from-blue-500 via-indigo-500 to-violet-500 bg-clip-text text-transparent font-semibold text-lg">
@@ -248,7 +248,7 @@ const LeftSide = ({ role, onShopDetailsChange }) => {
 
         <button
           onClick={toggleBarcodePopup}
-          className={`absolute -top-56 left-0 ${buttonBaseClasses}`}
+          className={`bt1 absolute -top-56 left-0 ${buttonBaseClasses}`}
         >
           <FaFilePdf />
           <span className="bg-gradient-to-r from-yellow-400 via-orange-500 to-red-500 bg-clip-text text-transparent font-bold text-lg">
@@ -258,7 +258,7 @@ const LeftSide = ({ role, onShopDetailsChange }) => {
       </div>
 
       {showCalculator && (
-        <div className="fixed top-20 left-1/2 transform -translate-x-1/2 z-50">
+        <div className="cl1 fixed top-20 left-1/2 transform -translate-x-1/2 z-50">
           <Calculator />
         </div>
       )}

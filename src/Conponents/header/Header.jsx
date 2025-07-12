@@ -3,7 +3,7 @@ import React from 'react';
 
 const Header = ({ onLogout }) => {
   return (
-    <header className="bg-black text-white px-8 py-3 shadow-md">
+    <header className=" header-main bg-black text-white px-8 py-3 shadow-md">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="text-xl font-bold tracking-wide bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 bg-clip-text text-transparent">
           SaNa

@@ -78,7 +78,7 @@ const RightSide = () => {
       {/* Preview Button */}
       <button 
         onClick={handlePreview}
-        className="mobile-full-btn relative px-8 py-3 mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
+        className="bt1 mobile-full-btn relative px-8 py-3 mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
       >
         <FaEye className={iconClasses} />
         <span className="bg-gradient-to-r from-teal-400 via-emerald-500 to-lime-500 bg-clip-text text-transparent font-semibold text-lg">
@@ -91,7 +91,7 @@ const RightSide = () => {
       {/* Admin Button */}
       <button
         onClick={handleAdminClick}
-        className="mobile-full-btn relative px-8 py-3 mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
+        className="bt1 mobile-full-btn relative px-8 py-3 mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
       >
         <FaUserShield className={iconClasses} />
         <span className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 bg-clip-text text-transparent font-bold text-lg">
@@ -104,7 +104,7 @@ const RightSide = () => {
       {/* Add QR Code Button */}
       <button
         onClick={() => setShowBarcodeForm(true)}
-        className="mobile-full-btn relative px-8 py-3 mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
+        className="bt1 mobile-full-btn relative px-8 py-3 mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
       >
         <FaQrcode className={iconClasses} />
         <span className="bg-gradient-to-r from-cyan-500 via-sky-500 to-blue-600 bg-clip-text text-transparent font-semibold text-lg">
@@ -117,7 +117,7 @@ const RightSide = () => {
       {/* Share Button */}
       <button
         onClick={() => setShowShare((prev) => !prev)}
-        className="share-button relative px-8 py-3  mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
+        className="bt1 share-button relative px-8 py-3  mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
       >
         <FaShareAlt className={`ml-9 ${iconClasses}`} />
 
@@ -183,7 +183,7 @@ const RightSide = () => {
       )}
 
       {/* Invoice Button for Mobile Only */}
-<div className="sm:hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
+<div className="bt1 sm:hidden fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
   <button
     onClick={() => setShowInvoicePopup(true)}
     className="px-6 py-3 bg-purple-600 text-white rounded-full shadow-lg hover:bg-purple-700 transition"
