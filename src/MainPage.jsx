@@ -1,3 +1,4 @@
+// MainPage.jsx
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 import Login from "./Conponents/AuthPage/Login";
@@ -13,7 +14,6 @@ export default function MainPage() {
     const publicPaths = ["/login", "/signup"];
     const isPublic = publicPaths.includes(location.pathname);
 
-    // Redirect to login only if NOT already on /login or /signup
     if (!user && !isPublic) {
       navigate("/login");
     }
@@ -36,7 +36,7 @@ export default function MainPage() {
               userRole={user?.role}
             />
           ) : (
-            <Navigate to="/login" />
+            <Navigate to="/login" replace />
           )
         }
       />

@@ -1,14 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { InvoiceContext } from "../invoice/InvoiceContext";
 import {
   FaEye,
   FaUserShield,
   FaQrcode,
-  FaDownload,
   FaPrint,
   FaShareAlt,
-  FaPercent,
-  FaUndo,
 } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import "./RightSide.css";
@@ -26,8 +23,15 @@ const RightSide = () => {
     address: "",
   });
 
+  // Save invoiceData to localStorage whenever it changes
+  useEffect(() => {
+    if (invoiceData) {
+      localStorage.setItem("invoiceData", JSON.stringify(invoiceData));
+    }
+  }, [invoiceData]);
+
   const handlePreview = () => {
-    // Your preview logic
+    // Your preview logic here (if any)
   };
 
   const handleAdminClick = () => {
@@ -44,9 +48,9 @@ const RightSide = () => {
   const handlePrintAndSave = async () => {
     const total = invoiceData.items.reduce((acc, cur) => acc + cur.amount, 0);
 
-    // Use environment variable or localhost fallback
     const backendURL =
-      import.meta.env.VITE_BACKEND_URL || (window.location.hostname === "localhost" ? "http://localhost:5000" : "");
+      import.meta.env.VITE_BACKEND_URL ||
+      (window.location.hostname === "localhost" ? "http://localhost:5000" : "");
 
     try {
       await fetch(`${backendURL}/api/daysales`, {

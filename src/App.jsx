@@ -12,7 +12,7 @@ import DocumentPage from './Conponents/DocumentPage/DocumentPage';
 
 import { InvoiceContext } from "./Conponents/invoice/InvoiceContext";
 
-function App({ onLogout, userRole }) {
+function App() {
   const { setInvoiceData } = useContext(InvoiceContext);
   const [shopDetails, setShopDetails] = useState({
     name: "",
@@ -38,6 +38,10 @@ function App({ onLogout, userRole }) {
       });
   }, [setInvoiceData]);
 
+  if (loading) {
+    return <div className="flex justify-center items-center min-h-screen">Loading...</div>;
+  }
+
   return (
     <>
       <Routes>
@@ -47,7 +51,7 @@ function App({ onLogout, userRole }) {
             <div className="flex">
               <LeftSide onShopDetailsChange={setShopDetails} />
               <div className="flex-1 flex flex-col min-h-screen bg-gray-100 overflow-y-auto">
-                <Header onLogout={onLogout} />
+                <Header />
                 <div className="flex justify-center p-4">
                   <BillingPage shopDetails={shopDetails} />
                 </div>
@@ -86,10 +90,6 @@ function App({ onLogout, userRole }) {
 
 export default App;
 
-// SVG Filters component unchanged...
-
-
-// SVG Filters unchanged
 function SvgFilters() {
   return (
     <svg style={{ position: "absolute", width: 0, height: 0 }}>

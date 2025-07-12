@@ -1,15 +1,18 @@
-// main.jsx
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import MainPage from "./MainPage"; // ✅ make sure it's MainPage, not App
 
+import App from "./App";  // Make sure path and name match your App component file
+
+import { InvoiceProvider } from "./Conponents/invoice/InvoiceContext";
 import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <BrowserRouter>
-      <MainPage />
+      <InvoiceProvider>
+        <App />
+      </InvoiceProvider>
     </BrowserRouter>
   </React.StrictMode>
 );

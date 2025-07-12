@@ -31,13 +31,16 @@ const BillingPage = ({ invoiceOverride }) => {
     }
   }, [backendURL, invoiceOverride]);
 
-  useEffect(() => {
+useEffect(() => {
+  if (!invoiceOverride) {
     const defaultInvoice = {
       customerName: "",
       items: [],
     };
     setInvoiceData(defaultInvoice);
-  }, [setInvoiceData]);
+  }
+}, [setInvoiceData, invoiceOverride]);
+
 
   useEffect(() => {
     fetch(`${backendURL}/api/products`)
