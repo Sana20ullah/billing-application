@@ -136,6 +136,23 @@ useEffect(() => {
   };
 
   useEffect(() => {
+  const loadLogo = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/logo`);
+      const json = await res.json();
+      if (json?.data) {
+        setInvoiceData(prev => ({ ...prev, logo: json.data }));
+      }
+    } catch (err) {
+      console.error("Logo load failed", err);
+    }
+  };
+
+  loadLogo();
+}, []);
+
+
+  useEffect(() => {
     const scanner = new Html5QrcodeScanner("scanner", { fps: 10, qrbox: 250 });
 
     scanner.render(
@@ -208,7 +225,18 @@ useEffect(() => {
   return (
     <div className="flex-1 flex justify-center items-start overflow-hidden print:p-5">
       <div className="print-area w-[600px] print:w-[300px] max-h-[100vh] print:max-h-full print:h-auto overflow-y-auto print:overflow-visible overflow-x-hidden print:overflow-x-hidden bg-white p-5 rounded shadow-md text-gray-800 print:break-words">
-        <h1 className="text-3xl mb-5 font-bold text-center mb-0">INVOICE</h1>
+{invoiceData?.logo && (
+  <div className="flex justify-center mb-3">
+    <img
+      src={invoiceData.logo}
+      alt="Logo"
+      className="w-16 h-16 rounded-full object-cover"
+    />
+  </div>
+)}
+
+<h1 className="text-3xl mb-5 font-bold text-center">INVOICE</h1>
+
 
         <div className="flex justify-between items-start mb-6">
           <div>

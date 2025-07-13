@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import { InvoiceContext } from "../invoice/InvoiceContext";
 import BillingPage from "../Manu/BillingPage";
+import LogoUploader from "../LogoUploader/LogoUploader"; // adjust path if needed
+
 
 import {
   FaEye,
@@ -20,6 +22,8 @@ const RightSide = () => {
   const [showShare, setShowShare] = useState(false);
   const [showBarcodeForm, setShowBarcodeForm] = useState(false);
   const [showInvoicePopup, setShowInvoicePopup] = useState(false);
+  const [showLogoUploader, setShowLogoUploader] = useState(false);
+
 
   const [barcodeForm, setBarcodeForm] = useState({
     link: "",
@@ -49,6 +53,28 @@ const RightSide = () => {
     }
   };
 
+  const handleImageUpload = async (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onloadend = async () => {
+    const base64 = reader.result;
+
+    await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/logo`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ data: base64 }),
+    });
+
+    setInvoiceData(prev => ({ ...prev, logo: base64 }));
+    localStorage.setItem("logo", base64); // optional cache
+  };
+
+  reader.readAsDataURL(file);
+};
+
+
   const handlePrintAndSave = async () => {
     const total = invoiceData.items.reduce((acc, cur) => acc + cur.amount, 0);
 
@@ -76,17 +102,20 @@ const RightSide = () => {
     <div className=" width-right-page mobile-scroll-wrapper  w-64  h-160 bg-black text-white p-4 flex flex-col gap-4 shadow-lg relative sm:-mt-2  ">
 
       {/* Preview Button */}
-      <button 
-        onClick={handlePreview}
-        className="bt1 mobile-full-btn relative px-8 py-3 mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 hover:shadow-[0_0_20px_10px_rgba(168,85,247,0.6)] active:scale-95 active:shadow-[0_0_10px_5px_rgba(168,85,247,0.4)] group flex items-center gap-2"
-      >
-        <FaEye className={iconClasses} />
-        <span className="bg-gradient-to-r from-teal-400 via-emerald-500 to-lime-500 bg-clip-text text-transparent font-semibold text-lg">
-          Preview
-        </span>
+  <button 
+  onClick={() => setShowLogoUploader(true)}
+  className="bt1 mobile-full-btn relative px-8 py-3 mt-4 bg-black text-white font-semibold rounded-lg border-2 border-purple-500 hover:border-purple-400 transition-all duration-300 group flex items-center gap-2"
+>
+  <FaEye className={iconClasses} />
+  <span className="bg-gradient-to-r from-teal-400 via-emerald-500 to-lime-500 bg-clip-text text-transparent font-semibold text-lg">
+    Add Logo
+  </span>
+</button>
+{showLogoUploader && (
+  <LogoUploader onClose={() => setShowLogoUploader(false)} />
+)}
 
-        <span className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-r from-purple-500/20 to-indigo-500/20"></span>
-      </button>
+
 
       {/* Admin Button */}
       <button
