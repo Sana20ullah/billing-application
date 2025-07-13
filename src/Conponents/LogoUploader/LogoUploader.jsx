@@ -1,4 +1,3 @@
-// src/components/LogoUploader.jsx
 import React, { useContext, useState } from "react";
 import { InvoiceContext } from "../invoice/InvoiceContext";
 
@@ -12,35 +11,46 @@ const LogoUploader = ({ onClose }) => {
       const reader = new FileReader();
       reader.onloadend = () => {
         setLogoURL(reader.result);
-        // Save to context and localStorage
         setInvoiceData((prev) => ({ ...prev, logo: reader.result }));
         localStorage.setItem("logo", reader.result);
-        onClose(); // close modal
+        onClose();
       };
       reader.readAsDataURL(file);
     }
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-40 z-50">
-      <div className="bg-black p-4 rounded-md w-[300px] text-center shadow-lg">
-        <h2 className="font-bold text-lg mb-3">Upload Logo</h2>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageUpload}
-          className="mb-3"
-        />
-        {logoURL && (
-          <img
-            src={logoURL}
-            alt="Preview"
-            className="w-24 h-24 rounded-full mx-auto"
+    <div className="fixed inset-0 z-50 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center px-4">
+      <div className="bg-white dark:bg-zinc-900 p-6 rounded-2xl shadow-2xl w-full max-w-sm animate-fadeIn">
+        <h2 className="text-2xl font-semibold text-center text-zinc-800 dark:text-white mb-4">
+          Upload Your Logo
+        </h2>
+
+        <label className="block cursor-pointer w-full border-2 border-dashed border-zinc-300 dark:border-zinc-700 rounded-xl p-4 text-center hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="hidden"
           />
+          <p className="text-zinc-600 dark:text-zinc-300 text-sm">
+            Click to select an image (JPG, PNG, etc.)
+          </p>
+        </label>
+
+        {logoURL && (
+          <div className="mt-4">
+            <img
+              src={logoURL}
+              alt="Preview"
+              className="w-24 h-24 mx-auto rounded-full border-4 border-zinc-300 dark:border-zinc-600 shadow-lg object-cover"
+            />
+          </div>
         )}
+
         <button
           onClick={onClose}
-          className="mt-3 px-4 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+          className="mt-6 w-full py-2 rounded-lg bg-gradient-to-r from-pink-500 to-red-500 text-white font-medium hover:scale-105 transition-transform"
         >
           Cancel
         </button>
