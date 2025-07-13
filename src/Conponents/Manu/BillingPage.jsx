@@ -1,9 +1,12 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
+
+
 import { FaTrash } from "react-icons/fa";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import { useNavigate } from "react-router-dom";
 import "./Manu.css";
 import { InvoiceContext } from "../invoice/InvoiceContext";
+
 
 const BillingPage = ({ invoiceOverride }) => {
   const navigate = useNavigate();
@@ -17,19 +20,25 @@ const BillingPage = ({ invoiceOverride }) => {
   const [discount, setDiscount] = useState(invoiceOverride?.discount || 0);
   const [changeMoney, setChangeMoney] = useState(invoiceOverride?.changeMoney || 0);
   const [customerName, setCustomerName] = useState(invoiceOverride?.customerName || "");
-  
+ const shopFetchedRef = useRef(false);
 
 
   const backendURL =
     import.meta.env.VITE_BACKEND_URL ||
     (window.location.hostname === "localhost" ? "http://localhost:5000" : "");
 
+
 useEffect(() => {
-  fetch('/api/shop')
-    .then(res => res.json())
-    .then(data => setShop(data))
-    .catch(console.error);
-}, []); // Empty dependency array ensures only once
+  if (!shopFetchedRef.current) {
+    shopFetchedRef.current = true;
+
+    fetch(`${backendURL}/api/shop`) // ✅ FIXED
+      .then((res) => res.json())
+      .then((data) => setShop(data))
+      .catch((err) => console.error("Failed to fetch shop", err));
+  }
+}, [backendURL]);
+
 
 
 useEffect(() => {
@@ -137,21 +146,25 @@ useEffect(() => {
     setSuggestions((prev) => ({ ...prev, [index]: [] }));
   };
 
-  useEffect(() => {
+ useEffect(() => {
   const loadLogo = async () => {
     try {
-      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/logo`);
+      const res = await fetch(`${backendURL}/api/logo`);
       const json = await res.json();
       if (json?.data) {
         setInvoiceData(prev => ({ ...prev, logo: json.data }));
+        localStorage.setItem("logo", json.data);
       }
     } catch (err) {
       console.error("Logo load failed", err);
     }
   };
 
-  loadLogo();
+  if (!invoiceData.logo) {
+    loadLogo();
+  }
 }, []);
+
 
 useEffect(() => {
   const storedLogo = localStorage.getItem("logo");
