@@ -68,35 +68,8 @@
 
 @media (max-width: 768px){
 
-    .grid-cols-header {
-  display: grid;
-  grid-template-columns: 30px 1fr 35px 50px 80px 20px;
-  font-weight: 600; /* equivalent to font-semibold */
-  border-bottom: 1px dotted #9ca3af; /* Tailwind's gray-400 */
-  padding-bottom: 0.5rem; /* pb-2 */
-  margin-bottom: 0.5rem; /* mb-2 */
-  gap: 0.5rem; /* gap-2 */
-}
-.abcd1{
-  margin-left: -2.5rem;
-  width: 7rem;
-}
-.abcd2{
-  margin-left: 1.5rem;
-  width: 2.5rem;
-}
-.abcd3{
-  margin-left: 0.3rem;
-  width: 4rem;
-  
-}
-.abcd4{
-  margin-left: 3rem;
-}
-.abcd5{
-  margin-left: 0.1rem;
 
-}
+
 .barcode-mobile{
   margin-left: 8rem;
 }
@@ -130,7 +103,7 @@
 }
 .share-button{
   
-  margin-left: 1.7rem;
+  margin-left: 7px;
   height: 5.2rem;
   font-size: 2rem;
   margin-top: -0.1rem;
@@ -140,6 +113,9 @@
 .bt1{
   height: auto;
   width: 19rem;
+}
+.print-area{
+  
 }
 
 }

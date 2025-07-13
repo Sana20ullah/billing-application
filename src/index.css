@@ -64,6 +64,16 @@ input:-webkit-autofill:active {
     position: static !important;
   }
 
+      .grid-cols-header {
+  display: grid;
+  grid-template-columns: 30px 1fr 45px 70px 80px 20px;
+  font-weight: 600; /* equivalent to font-semibold */
+  border-bottom: 1px dotted #9ca3af; /* Tailwind's gray-400 */
+  padding-bottom: 0.5rem; /* pb-2 */
+  margin-bottom: 0.5rem; /* mb-2 */
+  gap: 0.5rem; /* gap-2 */
+}
+
   .mobile-scroll-wrapper {
     display: flex;
     flex-direction: column;
@@ -85,12 +95,12 @@ input:-webkit-autofill:active {
   }
 
   .width-right-page {
-    width: 35rem;
+    width: 34rem;
     max-width: 100vw;
     height: auto;
     margin: 0;
     margin-top: 49rem;
-    margin-left: -29rem;
+    margin-left: -27rem;
     border: none;
     overflow: hidden;
     list-style: none;
@@ -124,5 +134,145 @@ input:-webkit-autofill:active {
   .header-main{
     display: none;
   }
+  .share-button{
+  
+  margin-left: 39px;
+  height: 5.2rem;
+  font-size: 2rem;
+  margin-top: -0.1rem;
+  gap: 2rem;
+
 }
 
+.abcd1{
+  margin-left: -2.5rem;
+  width: 7rem;
+}
+.abcd2{
+  margin-left: 1.5rem;
+  width: 2.5rem;
+}
+.abcd3{
+  margin-left: 0.3rem;
+  width: 4rem;
+  
+}
+.abcd4{
+  margin-left: 3rem;
+}
+.abcd5{
+  margin-left: -1rem;
+
+}
+}
+
+@media (max-width: 368px){
+    .mobile-full-btn {
+    display: block !important;
+    margin: 0 auto !important;
+    position: static !important;
+  }
+
+      .grid-cols-header {
+  display: grid;
+  grid-template-columns: 30px 1fr 35px 50px 80px 20px;
+  font-weight: 600; /* equivalent to font-semibold */
+  border-bottom: 1px dotted #9ca3af; /* Tailwind's gray-400 */
+  padding-bottom: 0.5rem; /* pb-2 */
+  margin-bottom: 0.5rem; /* mb-2 */
+  gap: 0.5rem; /* gap-2 */
+}
+
+  .mobile-scroll-wrapper {
+    
+    flex-direction: column;
+    overflow-y: auto;
+    height: auto;
+    padding-bottom: 10px;
+    overflow-x: hidden; /* Prevent horizontal movement */
+  }
+
+  .width-left-page {
+    width: 38rem ;
+    max-width: 100vw;
+    height: auto;
+    margin-left: em !important; 
+    margin: 0;
+    
+    overflow: hidden;
+    border: 1px solid rgb(253, 251, 254);
+      
+  }
+
+  .width-right-page {
+    width: 50rem !important;
+    max-width: 100vw;
+    height: auto;
+    margin: 0;
+    margin-top: 49rem;
+    margin-left: -22.4rem;
+    border: none;
+    overflow: hidden;
+    list-style: none;
+    background-color: black;
+     
+    
+  }
+
+  body {
+    overflow-x: hidden; /* Prevent page shifting left/right */
+  }
+
+
+
+  .print-icon-size{
+    margin-top: 1rem ;
+    display: none;
+    
+    
+  }
+  .print-button-size{
+    width: 19rem;
+    height: 5rem;
+    
+    
+   
+  }
+  
+  .print-text-size{
+    font-size: 2rem;
+    margin-top:-1.6rem ;
+  }
+  .header-main{
+    display: none;
+  }
+    .share-button{
+  
+  margin-left: 9px;
+  height: 5.2rem;
+  font-size: 2rem;
+  margin-top: -0.1rem;
+  gap: 2rem;
+
+}
+.abcd1{
+  margin-left: -2.5rem;
+  width: 7rem;
+}
+.abcd2{
+  margin-left: 1.5rem;
+  width: 2.5rem;
+}
+.abcd3{
+  margin-left: 0.3rem;
+  width: 4rem;
+  
+}
+.abcd4{
+  margin-left: 2rem;
+}
+.abcd5{
+  margin-left: -1rem;
+
+}
+}

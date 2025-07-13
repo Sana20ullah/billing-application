@@ -207,7 +207,7 @@ useEffect(() => {
 
   return (
     <div className="flex-1 flex justify-center items-start overflow-hidden print:p-5">
-      <div className="print-area w-[900px] print:w-[300px] max-h-[100vh] print:max-h-full print:h-auto overflow-y-auto print:overflow-visible overflow-x-hidden print:overflow-x-hidden bg-white p-5 rounded shadow-md text-gray-800 print:break-words">
+      <div className="print-area w-[600px] print:w-[300px] max-h-[100vh] print:max-h-full print:h-auto overflow-y-auto print:overflow-visible overflow-x-hidden print:overflow-x-hidden bg-white p-5 rounded shadow-md text-gray-800 print:break-words">
         <h1 className="text-3xl mb-5 font-bold text-center mb-0">INVOICE</h1>
 
         <div className="flex justify-between items-start mb-6">

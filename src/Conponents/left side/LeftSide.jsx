@@ -19,7 +19,7 @@ import ReturnSaleForm from "../ReturnSaleForm/ReturnSaleForm";
 import MonthAmountForm from "../MonthAmountForm/MonthAmountForm";
 import { useNavigate } from "react-router-dom";
 
-const LeftSide = ({ role, onShopDetailsChange }) => {
+const LeftSide = ({ onShopDetailsChange }) => {
   const { addProductToInvoice } = useContext(InvoiceContext);
   const [showProductsList, setShowProductsList] = useState(false);
   const [showCalculator, setShowCalculator] = useState(false);
@@ -210,8 +210,9 @@ const LeftSide = ({ role, onShopDetailsChange }) => {
         
        
         
-          <button
-            onClick={() => alert("Only admin can edit shop info.")}
+         <button
+  onClick={toggleShopForm}
+
             className={`bt1 absolute -top-35 left-0 ${buttonBaseClasses}`}
           >
             <FaPercentage />
