@@ -1,12 +1,33 @@
 
 .grid-cols-header {
   display: grid;
-  grid-template-columns: 90px 1fr 90px 90px 90px 50px;
+  grid-template-columns: 90px 1fr 60px 90px 90px 50px;
   font-weight: 600; /* equivalent to font-semibold */
   border-bottom: 1px dotted #9ca3af; /* Tailwind's gray-400 */
   padding-bottom: 0.5rem; /* pb-2 */
   margin-bottom: 0.5rem; /* mb-2 */
   gap: 0.5rem; /* gap-2 */
+}
+
+.abcd1{
+  margin-left: -2.5rem;
+  width: 9rem;
+}
+.abcd2{
+  margin-left: 3rem;
+  width: 4rem;
+}
+.abcd3{
+  margin-left: 0.8rem;
+  width: 4rem;
+  
+}
+.abcd4{
+  margin-left: 3.5rem;
+}
+.abcd5{
+  margin-left: 2rem;
+
 }
 
 .grid-cols-items {
