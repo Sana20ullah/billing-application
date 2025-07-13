@@ -61,11 +61,12 @@ const RightSide = () => {
   reader.onloadend = async () => {
     const base64 = reader.result;
 
-    await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/logo`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ data: base64 }),
-    });
+ await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/logo`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ data: base64 }), // <--- must be `data`, not `logo`
+});
+
 
     setInvoiceData(prev => ({ ...prev, logo: base64 }));
     localStorage.setItem("logo", base64); // optional cache

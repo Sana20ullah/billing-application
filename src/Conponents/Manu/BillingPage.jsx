@@ -17,29 +17,31 @@ const BillingPage = ({ invoiceOverride }) => {
   const [discount, setDiscount] = useState(invoiceOverride?.discount || 0);
   const [changeMoney, setChangeMoney] = useState(invoiceOverride?.changeMoney || 0);
   const [customerName, setCustomerName] = useState(invoiceOverride?.customerName || "");
+  
+
 
   const backendURL =
     import.meta.env.VITE_BACKEND_URL ||
     (window.location.hostname === "localhost" ? "http://localhost:5000" : "");
 
-  useEffect(() => {
-    if (!invoiceOverride) {
-      fetch(`${backendURL}/api/shop`)
-        .then((res) => res.json())
-        .then(setShop)
-        .catch((err) => console.error("Failed to load shop from MongoDB", err));
-    }
-  }, [backendURL, invoiceOverride]);
+useEffect(() => {
+  fetch('/api/shop')
+    .then(res => res.json())
+    .then(data => setShop(data))
+    .catch(console.error);
+}, []); // Empty dependency array ensures only once
+
 
 useEffect(() => {
   if (!invoiceOverride) {
-    const defaultInvoice = {
+    setInvoiceData((prev) => ({
+      ...prev,
       customerName: "",
       items: [],
-    };
-    setInvoiceData(defaultInvoice);
+    }));
   }
 }, [setInvoiceData, invoiceOverride]);
+
 
 
   useEffect(() => {
@@ -151,6 +153,13 @@ useEffect(() => {
   loadLogo();
 }, []);
 
+useEffect(() => {
+  const storedLogo = localStorage.getItem("logo");
+  if (storedLogo && !invoiceData.logo) {
+    setInvoiceData(prev => ({ ...prev, logo: storedLogo }));
+  }
+}, []);
+
 
   useEffect(() => {
     const scanner = new Html5QrcodeScanner("scanner", { fps: 10, qrbox: 250 });
@@ -226,7 +235,7 @@ useEffect(() => {
     <div className="flex-1 flex justify-center items-start overflow-hidden print:p-5">
       <div className="print-area w-[600px] print:w-[300px] max-h-[100vh] print:max-h-full print:h-auto overflow-y-auto print:overflow-visible overflow-x-hidden print:overflow-x-hidden bg-white p-5 rounded shadow-md text-gray-800 print:break-words">
 {invoiceData?.logo && (
-  <div className="flex justify-center mb-3">
+  <div className="flex justify-center mb-1">
     <img
       src={invoiceData.logo}
       alt="Logo"
@@ -235,7 +244,10 @@ useEffect(() => {
   </div>
 )}
 
-<h1 className="text-3xl mb-5 font-bold text-center">INVOICE</h1>
+<h1 className="text-3xl mb-5 font-bold text-center print:text-lg">INVOICE</h1>
+
+
+
 
 
         <div className="flex justify-between items-start mb-6">

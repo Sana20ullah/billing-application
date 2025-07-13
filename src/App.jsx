@@ -23,6 +23,25 @@ function App() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+  const loadLogo = async () => {
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/logo`);
+      const json = await res.json();
+      if (json?.data) {
+        setInvoiceData(prev => ({ ...prev, logo: json.data }));
+        localStorage.setItem("logo", json.data); // optional
+      }
+    } catch (err) {
+      console.error("Failed to load logo", err);
+    }
+  };
+
+  loadLogo();
+}, []);
+
+
+
+  useEffect(() => {
     fetch("http://localhost:5000/api/shop")
       .then((res) => res.json())
       .then((data) => {

@@ -5,10 +5,24 @@ const Header = ({ onLogout }) => {
   const { invoiceData } = useContext(InvoiceContext);
   const [logo, setLogo] = useState(null);
 
+
+
   useEffect(() => {
-    const stored = invoiceData?.logo || localStorage.getItem("logo");
-    setLogo(stored);
-  }, [invoiceData]);
+  const loadLogo = async () => {
+    if (invoiceData.logo) return; // prevent overwriting
+    try {
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/logo`);
+      const json = await res.json();
+      if (json?.data) {
+        setInvoiceData(prev => ({ ...prev, logo: json.data }));
+      }
+    } catch (err) {
+      console.error("Failed to load logo from backend", err);
+    }
+  };
+  loadLogo();
+}, []);
+
 
   return (
     <header className="header-main bg-black text-white px-8 py-3 shadow-md">
